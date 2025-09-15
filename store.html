@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TelugeAgro - Toko Online Pisang Premium</title>
+    <link rel="icon" href="logo Teluge.jpg" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+        import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB2sLqWwZIxr65c3CcNgKCCjmDTeDlSnfY",
+            authDomain: "telugeagro2025.firebaseapp.com",
+            projectId: "telugeagro2025",
+            storageBucket: "telugeagro2025.firebasestorage.app",
+            messagingSenderId: "1029963109637",
+            appId: "1:1029963109637:web:86824d0db45e1489b3136c",
+            measurementId: "G-XF1JDPME66"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Function to update pending orders count display
+        function updatePendingOrdersCount(count) {
+            const countElement = document.getElementById('pending-count');
+            const countMobileElement = document.getElementById('pending-count-mobile');
+            if (countElement) {
+                countElement.textContent = count;
+                if (count === 0) {
+                    countElement.classList.add('hidden');
+                } else {
+                    countElement.classList.remove('hidden');
+                }
+            }
+            if (countMobileElement) {
+                countMobileElement.textContent = count;
+                if (count === 0) {
+                    countMobileElement.classList.add('hidden');
+                } else {
+                    countMobileElement.classList.remove('hidden');
+                }
+            }
+        }
+
+        // Function to load pending orders count
+        async function loadPendingOrdersCount() {
+            try {
+                const ordersQuery = query(collection(db, 'orders'), orderBy('timestamp', 'desc'));
+                const querySnapshot = await getDocs(ordersQuery);
+                let pendingCount = 0;
+
+                querySnapshot.forEach((doc) => {
+                    const order = doc.data();
+                    const status = order.status || 'pending';
+                    if (status === 'pending') {
+                        pendingCount++;
+                    }
+                });
+
+                updatePendingOrdersCount(pendingCount);
+            } catch (error) {
+                console.error('Error loading pending orders count:', error);
+            }
+        }
+
+        loadPendingOrdersCount();
+
+        window.loadPendingOrdersCount = loadPendingOrdersCount;
+        window.updatePendingOrdersCount = updatePendingOrdersCount;
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #22c55e;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #16a34a;
+        }
+
+        /* Gradient Backgrounds */
+        .gradient-bg {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%);
+        }
+        
+        .gradient-bg-light {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+
+        /* Glass Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #22c55e;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Product Card Animations */
+        .product-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(34, 197, 94, 0.3);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+            z-index: 1;
+        }
+        
+        .product-card:hover::before {
+            left: 100%;
+        }
+
+        /* Quick View Modal */
+        .modal {
+            backdrop-filter: blur(10px);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Button Animations */
+        .btn-bounce {
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .btn-bounce:hover {
+            transform: scale(1.05);
+        }
+        
+        .btn-bounce:active {
+            transform: scale(0.95);
+        }
+
+        /* Cart Icon Animation */
+        .cart-shake {
+            animation: cartShake 0.6s ease-in-out;
+        }
+        
+        @keyframes cartShake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+
+        /* Price Tag Animation */
+        .price-tag {
+            position: relative;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .price-tag:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);
+        }
+
+        /* Quantity Selector */
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .quantity-selector:focus-within {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+        
+        .quantity-btn {
+            background: #22c55e;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .quantity-btn:hover {
+            background: #16a34a;
+            transform: scale(1.1);
+        }
+        
+        .quantity-input {
+            border: none;
+            background: transparent;
+            text-align: center;
+            width: 60px;
+            height: 40px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* Mobile Menu Animation */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        /* Floating Cart */
+        .floating-cart {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .floating-cart:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* WhatsApp Float Button */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 100px;
+            right: 20px;
+            background-color: #25d366;
+            color: white;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            animation: bounce 2s infinite;
+        }
+        
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 2px 2px 15px rgba(37, 211, 102, 0.4);
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Filter Tabs */
+        .filter-tab {
+            padding: 12px 24px;
+            border-radius: 25px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .filter-tab.active {
+            background: #22c55e;
+            color: white;
+            border-color: #22c55e;
+            transform: scale(1.05);
+        }
+        
+        .filter-tab:hover:not(.active) {
+            background: #f1f5f9;
+            border-color: #22c55e;
+            transform: translateY(-2px);
+        }
+
+        /* Product Badge */
+        .product-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 2;
+            animation: pulse 2s infinite;
+        }
+        
+        .product-badge.new {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+        
+        .product-badge.organic {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .search-input:focus {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+            outline: none;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            transition: color 0.3s ease;
+        }
+        
+        .search-input:focus + .search-icon {
+            color: #22c55e;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Responsive Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        
+        @media (max-width: 640px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 16px;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .empty-state img {
+            width: 200px;
+            height: 200px;
+            opacity: 0.5;
+            margin-bottom: 24px;
+        }
+
+        /* Loading State */
+        .product-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 16px;
+            height: 300px;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Add to Cart Success Animation */
+        .add-to-cart-success {
+            animation: addToCartSuccess 0.8s ease;
+        }
+        
+        @keyframes addToCartSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); background-color: #10b981; }
+            100% { transform: scale(1); }
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .hero-text { font-size: 2rem; }
+            .product-card { margin-bottom: 16px; }
+            .floating-cart { bottom: 80px; right: 16px; }
+            .whatsapp-float { bottom: 140px; right: 16px; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
+        <div class="text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <h3 class="text-xl font-semibold text-gray-700">Memuat Toko TelugeAgro...</h3>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-40 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <img src="logo Teluge.jpg" alt="TelugeAgro Logo" class="w-10 h-10 md:w-12 md:h-12 rounded-full">
+                    <span class="text-xl md:text-2xl font-bold text-white">TelugeAgro</span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="leadingpage.html" class="text-white hover:text-green-200 transition-colors duration-300 font-medium">Beranda</a>
+                    <a href="leadingpage.html#about" class="text-white hover:text-green-200 transition-colors duration-300 font-medium">Tentang</a>
+                    <a href="#products" class="text-white hover:text-green-200 transition-colors duration-300 font-medium">Produk</a>
+                    <a href="leadingpage.html#contact" class="text-white hover:text-green-200 transition-colors duration-300 font-medium">Kontak</a>
+                    
+                    <!-- Cart Icon -->
+                    <a href="cart.html" class="relative text-white hover:text-green-200 transition-colors duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.1 5H19M7 13v8a2 2 0 002 2h10a2 2 0 002-2v-3"></path>
+                        </svg>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">0</span>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-white hover:text-green-200 transition-colors duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu md:hidden absolute top-full left-0 right-0 bg-green-700 border-t border-green-600">
+            <div class="px-4 pt-2 pb-4 space-y-2">
+                <a href="leadingpage.html" class="block px-3 py-2 text-white hover:bg-green-600 rounded transition-colors duration-300">Beranda</a>
+                <a href="leadingpage.html#about" class="block px-3 py-2 text-white hover:bg-green-600 rounded transition-colors duration-300">Tentang</a>
+                <a href="#products" class="block px-3 py-2 text-white hover:bg-green-600 rounded transition-colors duration-300">Produk</a>
+                <a href="leadingpage.html#contact" class="block px-3 py-2 text-white hover:bg-green-600 rounded transition-colors duration-300">Kontak</a>
+                <a href="cart.html" class="flex items-center px-3 py-2 bg-white text-green-600 rounded font-semibold hover:bg-green-50 transition-colors duration-300">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.1 5H19M7 13v8a2 2 0 002 2h10a2 2 0 002-2v-3"></path>
+                    </svg>
+                    Keranjang (<span id="cart-count-mobile">0</span>)
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-[60vh] flex items-center gradient-bg overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute transform rotate-12 -top-20 -right-20 w-96 h-96 rounded-full border-4 border-white"></div>
+            <div class="absolute transform -rotate-12 -bottom-20 -left-20 w-96 h-96 rounded-full border-4 border-white"></div>
+        </div>
+
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center" data-aos="fade-up" data-aos-duration="1000">
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+                    🍌 Toko Online <span class="text-yellow-300">TelugeAgro</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-green-100 mb-8 max-w-3xl mx-auto">
+                    Belanja Pisang Premium Langsung dari Kebun. Segar, Berkualitas, dan Siap Kirim ke Seluruh Indonesia!
+                </p>
+                
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-3 gap-6 max-w-2xl mx-auto mb-8" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-yellow-300">🚚</div>
+                        <p class="text-green-100 font-medium">Gratis Ongkir</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-yellow-300">⭐</div>
+                        <p class="text-green-100 font-medium">Kualitas Premium</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-yellow-300">📱</div>
+                        <p class="text-green-100 font-medium">Pesan Mudah</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search and Filter Section -->
+    <section class="py-8 bg-white border-b">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-6 items-center justify-between">
+                <!-- Search Bar -->
+                <div class="search-container flex-1 max-w-md" data-aos="fade-right">
+                    <input type="text" id="search-input" placeholder="Cari produk pisang..." class="search-input">
+                    <svg class="search-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="flex flex-wrap gap-3" data-aos="fade-left">
+                    <button class="filter-tab active" data-filter="all">Semua Produk</button>
+                    <button class="filter-tab" data-filter="premium">Premium</button>
+                    <button class="filter-tab" data-filter="organic">Organik</button>
+                    <button class="filter-tab" data-filter="export">Ekspor</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-16 gradient-bg-light">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Loading State -->
+            <div id="products-loading" class="products-grid mb-16">
+                <div class="product-skeleton"></div>
+                <div class="product-skeleton"></div>
+                <div class="product-skeleton"></div>
+                <div class="product-skeleton"></div>
+                <div class="product-skeleton"></div>
+                <div class="product-skeleton"></div>
+            </div>
+
+            <!-- Products Grid -->
+            <div id="products-grid" class="products-grid mb-16" style="display: none;">
+                <!-- Product 1 - Pisang Cavendish -->
+                <div class="product-card bg-white rounded-2xl p-6 shadow-lg" data-category="premium" data-aos="fade-up" data-aos-delay="100">
+                    <div class="product-badge">BEST SELLER</div>
+                    <div class="relative mb-4">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/6687a905-5ec4-43e4-9738-c2cc0c9db9b7.png" 
+                             alt="Pisang Cavendish Premium" 
+                             class="w-full h-48 object-cover rounded-xl mb-4">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-colors duration-300" onclick="toggleWishlist(this)">
+                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Pisang Cavendish Premium</h3>
+                    <p class="text-gray-600 mb-4 text-sm">Manis dan creamy, varietas premium yang paling populer untuk ekspor internasional</p>
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="price-tag">Rp 12.000/kg</div>
+                        <div class="flex items-center text-yellow-500">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                            <span class="text-sm ml-1">4.8 (124)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <div class="quantity-selector">
+                            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                            <input type="number" class="quantity-input" value="1" min="1" max="100">
+                            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                        </div>
+                        <button class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 btn-bounce" onclick="addToCart('Pisang Cavendish Premium', 12000, this)">
+                            Tambah ke Keranjang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 2 - Pisang Organik -->
+                <div class="product-card bg-white rounded-2xl p-6 shadow-lg" data-category="organic" data-aos="fade-up" data-aos-delay="200">
+                    <div class="product-badge organic">ORGANIK</div>
+                    <div class="relative mb-4">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ae569231-d922-40c1-b7b2-db4e98abb5e1.png" 
+                             alt="Pisang Organik" 
+                             class="w-full h-48 object-cover rounded-xl mb-4">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-colors duration-300" onclick="toggleWishlist(this)">
+                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Pisang Organik</h3>
+                    <p class="text-gray-600 mb-4 text-sm">Ditanam tanpa pestisida, pilihan sehat untuk pasar premium dan kesehatan keluarga</p>
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="price-tag">Rp 18.000/kg</div>
+                        <div class="flex items-center text-yellow-500">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                            <span class="text-sm ml-1">4.9 (89)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <div class="quantity-selector">
+                            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                            <input type="number" class="quantity-input" value="1" min="1" max="100">
+                            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                        </div>
+                        <button class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 btn-bounce" onclick="addToCart('Pisang Organik', 18000, this)">
+                            Tambah ke Keranjang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 3 - Paket Ekspor -->
+                <div class="product-card bg-white rounded-2xl p-6 shadow-lg" data-category="export" data-aos="fade-up" data-aos-delay="300">
+                    <div class="product-badge new">EXPORT GRADE</div>
+                    <div class="relative mb-4">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0472f936-2084-4f51-9c4d-414ee6926919.png" 
+                             alt="Paket Ekspor Bulk" 
+                             class="w-full h-48 object-cover rounded-xl mb-4">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-colors duration-300" onclick="toggleWishlist(this)">
+                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Paket Ekspor Bulk</h3>
+                    <p class="text-gray-600 mb-4 text-sm">Kemasan khusus untuk distributor besar dengan standar internasional (Min. 100kg)</p>
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="price-tag">Rp 15.000/kg</div>
+                        <div class="flex items-center text-yellow-500">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                            <span class="text-sm ml-1">4.7 (67)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <div class="quantity-selector">
+                            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                            <input type="number" class="quantity-input" value="100" min="100" max="1000" step="10">
+                            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                        </div>
+                        <button class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 btn-bounce" onclick="addToCart('Paket Ekspor Bulk', 15000, this)">
+                            Tambah ke Keranjang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 4 - Pisang Plantain -->
+                <div class="product-card bg-white rounded-2xl p-6 shadow-lg" data-category="premium" data-aos="fade-up" data-aos-delay="400">
+                    <div class="relative mb-4">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/bd310699-54f4-480f-a0a5-4f8c3610f6d0.png" 
+                             alt="Pisang Plantain" 
+                             class="w-full h-48 object-cover rounded-xl mb-4">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-colors duration-300" onclick="toggleWishlist(this)">
+                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Pisang Plantain</h3>
+                    <p class="text-gray-600 mb-4 text-sm">Cocok untuk memasak dan menggoreng, tekstur padat dan rasa yang khas</p>
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="price-tag">Rp 14.000/kg</div>
+                        <div class="flex items-center text-yellow-500">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                            <span class="text-sm ml-1">4.6 (45)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <div class="quantity-selector">
+                            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                            <input type="number" class="quantity-input" value="1" min="1" max="100">
+                            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                        </div>
+                        <button class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 btn-bounce" onclick="addToCart('Pisang Plantain', 14000, this)">
+                            Tambah ke Keranjang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 5 - Pisang Sutra -->
+                <div class="product-card bg-white rounded-2xl p-6 shadow-lg" data-category="premium" data-aos="fade-up" data-aos-delay="500">
+                    <div class="relative mb-4">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/fd4dc657-9fda-44f4-b8a1-358a90c514e9.png" 
+                             alt="Pisang Sutra Mini" 
+                             class="w-full h-48 object-cover rounded-xl mb-4">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-colors duration-300" onclick="toggleWishlist(this)">
+                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Pisang Sutra Mini</h3>
+                    <p class="text-gray-600 mb-4 text-sm">Pisang manis mini untuk camilan, ukuran kecil tapi rasa yang luar biasa</p>
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="price-tag">Rp 25.000/kg</div>
+                        <div class="flex items-center text-yellow-500">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                            <span class="text-sm ml-1">4.9 (78)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <div class="quantity-selector">
+                            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                            <input type="number" class="quantity-input" value="1" min="1" max="100">
+                            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                        </div>
+                        <button class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 btn-bounce" onclick="addToCart('Pisang Sutra Mini', 25000, this)">
+                            Tambah ke Keranjang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 6 - Paket Cemilan -->
+                <div class="product-card bg-white rounded-2xl p-6 shadow-lg" data-category="premium" data-aos="fade-up" data-aos-delay="600">
+                    <div class="relative mb-4">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a9d1dfe3-39bd-4e8b-b78b-dcae997768e0.png" 
+                             alt="Paket Cemilan Pisang" 
+                             class="w-full h-48 object-cover rounded-xl mb-4">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-colors duration-300" onclick="toggleWishlist(this)">
+                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Paket Cemilan Pisang</h3>
+                    <p class="text-gray-600 mb-4 text-sm">Keripik pisang kering dan produk olahan pisang lainnya, siap santap</p>
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="price-tag">Rp 20.000/pack</div>
+                        <div class="flex items-center text-yellow-500">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                            <span class="text-sm ml-1">4.8 (156)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <div class="quantity-selector">
+                            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                            <input type="number" class="quantity-input" value="1" min="1" max="50">
+                            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                        </div>
+                        <button class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 btn-bounce" onclick="addToCart('Paket Cemilan Pisang', 20000, this)">
+                            Tambah ke Keranjang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <div class="text-6xl mb-4">🔍</div>
+                <h3 class="text-2xl font-bold text-gray-700 mb-2">Produk tidak ditemukan</h3>
+                <p class="text-gray-500">Coba ubah kata kunci pencarian atau filter yang Anda gunakan</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Kenapa Pilih TelugeAgro?</h2>
+                <p class="text-xl text-gray-600">Komitmen kami untuk memberikan yang terbaik</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-colors duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-5xl mb-4">🚚</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Pengiriman Cepat</h3>
+                    <p class="text-gray-600">Gratis ongkir untuk pembelian minimal Rp 100.000</p>
+                </div>
+
+                <div class="text-center p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-colors duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-5xl mb-4">🌱</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Organik & Segar</h3>
+                    <p class="text-gray-600">Langsung dari kebun tanpa pengawet kimia berbahaya</p>
+                </div>
+
+                <div class="text-center p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-colors duration-300" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-5xl mb-4">⭐</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Kualitas Terjamin</h3>
+                    <p class="text-gray-600">Standar ekspor internasional dengan sertifikat resmi</p>
+                </div>
+
+                <div class="text-center p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-colors duration-300" data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-5xl mb-4">💬</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Customer Support</h3>
+                    <p class="text-gray-600">Tim support 24/7 siap membantu kebutuhan Anda</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="logo Teluge.jpg" alt="TelugeAgro Logo" class="w-12 h-12 rounded-full">
+                        <span class="text-2xl font-bold">TelugeAgro</span>
+                    </div>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        Toko online pisang premium dari Purworejo, Jawa Tengah. Belanja mudah, kualitas terjamin, pengiriman cepat ke seluruh Indonesia.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/teluge_agro" class="bg-gray-800 p-3 rounded-full hover:bg-green-600 transition-colors duration-300">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987s11.987-5.367 11.987-11.987C24.014 5.367 18.647.001 12.017.001z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.facebook.com/TelugeAgro" class="bg-gray-800 p-3 rounded-full hover:bg-green-600 transition-colors duration-300">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Menu</h3>
+                    <ul class="space-y-2">
+                        <li><a href="leadingpage.html" class="text-gray-300 hover:text-green-400 transition-colors duration-300">Beranda</a></li>
+                        <li><a href="leadingpage.html#about" class="text-gray-300 hover:text-green-400 transition-colors duration-300">Tentang</a></li>
+                        <li><a href="#products" class="text-gray-300 hover:text-green-400 transition-colors duration-300">Produk</a></li>
+                        <li><a href="cart.html" class="text-gray-300 hover:text-green-400 transition-colors duration-300">Keranjang</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Kontak</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li>📍 Purworejo, Jawa Tengah</li>
+                        <li>📱 +62 811-2638-318</li>
+                        <li>✉️ info@telugeagro.com</li>
+                        <li>🕒 24/7 Customer Support</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-400">© 2025 TelugeAgro. Semua hak dilindungi undang-undang.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Cart Button -->
+    <a href="cart.html" class="floating-cart bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 transition-all duration-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.1 5H19M7 13v8a2 2 0 002 2h10a2 2 0 002-2v-3"></path>
+        </svg>
+        <span id="floating-cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">0</span>
+    </a>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/628112638318?text=Halo%20TelugeAgro,%20saya%20tertarik%20untuk%20berbelanja%20pisang!" 
+       class="whatsapp-float" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       title="Hubungi WhatsApp">
+        📱
+    </a>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+        // Global Variables
+        let cartItems = {};
+        let wishlistItems = new Set();
+
+        // Loading Screen
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(function() {
+                    document.getElementById('loading-screen').style.display = 'none';
+                    showProducts();
+                }, 300);
+            }, 1500);
+        });
+
+        // Show Products with Animation
+        function showProducts() {
+            document.getElementById('products-loading').style.display = 'none';
+            document.getElementById('products-grid').style.display = 'grid';
+            
+            // Animate products in
+            const products = document.querySelectorAll('.product-card');
+            products.forEach((product, index) => {
+                setTimeout(() => {
+                    product.style.opacity = '0';
+                    product.style.transform = 'translateY(50px)';
+                    product.style.transition = 'all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)';
+                    
+                    setTimeout(() => {
+                        product.style.opacity = '1';
+                        product.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 100);
+            });
+        }
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('glass');
+                navbar.style.backdropFilter = 'blur(10px)';
+            } else {
+                navbar.classList.remove('glass');
+                navbar.style.backdropFilter = 'none';
+            }
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileMenu.classList.remove('active');
+            });
+        });
+
+        // Load Cart from LocalStorage
+        function loadCart() {
+            const cartData = localStorage.getItem('cart');
+            cartItems = JSON.parse(cartData) || {};
+            updateCartUI();
+        }
+
+        // Save Cart to LocalStorage
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+        }
+
+        // Update Cart UI
+        function updateCartUI() {
+            const items = Object.values(cartItems);
+            const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
+            
+            document.getElementById('cart-count').textContent = cartCount;
+            document.getElementById('cart-count-mobile').textContent = cartCount;
+            document.getElementById('floating-cart-count').textContent = cartCount;
+
+            // Animate cart icon when items added
+            if (cartCount > 0) {
+                document.getElementById('cart-count').parentElement.classList.add('cart-shake');
+                setTimeout(() => {
+                    document.getElementById('cart-count').parentElement.classList.remove('cart-shake');
+                }, 600);
+            }
+        }
+
+        // Quantity Controls
+        function increaseQuantity(btn) {
+            const input = btn.parentElement.querySelector('.quantity-input');
+            const currentValue = parseInt(input.value);
+            const maxValue = parseInt(input.max) || 1000;
+            const step = parseInt(input.step) || 1;
+            
+            if (currentValue < maxValue) {
+                input.value = currentValue + step;
+            }
+        }
+
+        function decreaseQuantity(btn) {
+            const input = btn.parentElement.querySelector('.quantity-input');
+            const currentValue = parseInt(input.value);
+            const minValue = parseInt(input.min) || 1;
+            const step = parseInt(input.step) || 1;
+            
+            if (currentValue > minValue) {
+                input.value = currentValue - step;
+            }
+        }
+
+        // Add to Cart Function
+        function addToCart(productName, price, btn) {
+            const productCard = btn.closest('.product-card');
+            const quantityInput = productCard.querySelector('.quantity-input');
+            const quantity = parseInt(quantityInput.value);
+
+            if (cartItems[productName]) {
+                cartItems[productName].quantity += quantity;
+            } else {
+                cartItems[productName] = {
+                    product: productName,
+                    price: price,
+                    quantity: quantity
+                };
+            }
+
+            saveCart();
+            updateCartUI();
+
+            // Button animation
+            btn.classList.add('add-to-cart-success');
+            const originalText = btn.textContent;
+            btn.textContent = '✓ Ditambahkan!';
+            
+            setTimeout(() => {
+                btn.classList.remove('add-to-cart-success');
+                btn.textContent = originalText;
+            }, 1500);
+
+            // Show toast
+            showToast(`${productName} berhasil ditambahkan ke keranjang!`, 'success');
+        }
+
+        // Wishlist Toggle
+        function toggleWishlist(btn) {
+            const productCard = btn.closest('.product-card');
+            const productName = productCard.querySelector('h3').textContent;
+            const heartIcon = btn.querySelector('svg');
+
+            if (wishlistItems.has(productName)) {
+                wishlistItems.delete(productName);
+                heartIcon.setAttribute('fill', 'none');
+                btn.classList.remove('bg-red-50');
+                showToast(`${productName} dihapus dari wishlist`, 'info');
+            } else {
+                wishlistItems.add(productName);
+                heartIcon.setAttribute('fill', 'currentColor');
+                btn.classList.add('bg-red-50');
+                showToast(`${productName} ditambahkan ke wishlist!`, 'success');
+            }
+
+            // Save to localStorage
+            localStorage.setItem('wishlist', JSON.stringify([...wishlistItems]));
+        }
+
+        // Load Wishlist
+        function loadWishlist() {
+            const wishlistData = localStorage.getItem('wishlist');
+            if (wishlistData) {
+                wishlistItems = new Set(JSON.parse(wishlistData));
+                
+                // Update UI
+                wishlistItems.forEach(productName => {
+                    const productCards = document.querySelectorAll('.product-card');
+                    productCards.forEach(card => {
+                        const cardTitle = card.querySelector('h3').textContent;
+                        if (cardTitle === productName) {
+                            const heartBtn = card.querySelector('button[onclick*="toggleWishlist"]');
+                            const heartIcon = heartBtn.querySelector('svg');
+                            heartIcon.setAttribute('fill', 'currentColor');
+                            heartBtn.classList.add('bg-red-50');
+                        }
+                    });
+                });
+            }
+        }
+
+        // Search Functionality
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            filterProducts(searchTerm);
+        });
+
+        // Filter Functionality
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Update active tab
+                filterTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // Filter products
+                const filterValue = this.getAttribute('data-filter');
+                filterProductsByCategory(filterValue);
+            });
+        });
+
+        // Filter Products by Search
+        function filterProducts(searchTerm) {
+            const products = document.querySelectorAll('.product-card');
+            let visibleCount = 0;
+
+            products.forEach(product => {
+                const title = product.querySelector('h3').textContent.toLowerCase();
+                const description = product.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    product.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+
+            // Show empty state if no results
+            const emptyState = document.getElementById('empty-state');
+            if (visibleCount === 0 && searchTerm.length > 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        // Filter Products by Category
+        function filterProductsByCategory(category) {
+            const products = document.querySelectorAll('.product-card');
+            let visibleCount = 0;
+
+            products.forEach(product => {
+                const productCategory = product.getAttribute('data-category');
+                
+                if (category === 'all' || productCategory === category) {
+                    product.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+
+            // Show empty state if no results
+            const emptyState = document.getElementById('empty-state');
+            if (visibleCount === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = message;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCart();
+            loadWishlist();
+        });
+
+        // Price Formatter
+        function formatPrice(price) {
+            return new Intl.NumberFormat('id-ID').format(price);
+        }
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('button, .btn-bounce').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Add CSS for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.4);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+                pointer-events: none;
+                z-index: 1;
+            }
+            
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

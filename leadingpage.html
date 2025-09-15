@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo Teluge.jpg" type="image/x-icon">
+    <title>Teluge Agro - Pemasok Pisang Terbaik Indonesia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #22c55e;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #16a34a;
+        }
+
+        /* Gradient Background */
+        .gradient-bg {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%);
+        }
+        
+        .gradient-bg-light {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+
+        /* Glass Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Pulse Animation */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.6); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        /* Slide in animations */
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Hover Effects */
+        .hover-scale {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.05) translateZ(0);
+        }
+
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button Animations */
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-shine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-shine:hover::before {
+            left: 100%;
+        }
+
+        /* Mobile Menu Animation */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #22c55e;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Parallax Effect */
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* Statistics Counter Animation */
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Testimonial Card Hover */
+        .testimonial-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-10px) rotate(1deg);
+        }
+
+        /* Hero Text Animation */
+        .hero-text {
+            background: linear-gradient(135deg, #ffffff, #f0fdf4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Custom Mobile Breakpoints */
+        @media (max-width: 640px) {
+            .stat-number { font-size: 2rem; }
+            .hero-text { font-size: 2.5rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .stat-number { font-size: 1.5rem; }
+            .hero-text { font-size: 2rem; }
+        }
+
+        /* WhatsApp Float Button */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25d366;
+            color: white;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            animation: bounce 2s infinite;
+        }
+        
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 2px 2px 15px rgba(37, 211, 102, 0.4);
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Product Card Glow Effect */
+        .product-glow {
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .product-glow:hover {
+            box-shadow: 0 8px 30px rgba(34, 197, 94, 0.4);
+            transform: translateY(-5px);
+        }
+
+        /* Responsive Typography */
+        @media (min-width: 768px) {
+            .responsive-text-xl { font-size: 1.25rem; }
+            .responsive-text-2xl { font-size: 1.5rem; }
+            .responsive-text-4xl { font-size: 2.25rem; }
+        }
+        
+        @media (min-width: 1024px) {
+            .responsive-text-xl { font-size: 1.5rem; }
+            .responsive-text-2xl { font-size: 2rem; }
+            .responsive-text-4xl { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
+        <div class="text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <h3 class="text-xl font-semibold text-gray-700">Memuat TelugeAgro...</h3>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-40 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 hover-scale">
+                    <img src="logo Teluge.jpg" alt="TelugeAgro Logo" class="w-10 h-10 md:w-12 md:h-12 rounded-full pulse-glow">
+                    <span class="text-xl md:text-2xl font-bold text-white">TelugeAgro</span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="nav-link text-white hover:text-green-200 transition-colors duration-300 font-medium">Beranda</a>
+                    <a href="#about" class="nav-link text-white hover:text-green-200 transition-colors duration-300 font-medium">Tentang</a>
+                    <a href="#products" class="nav-link text-white hover:text-green-200 transition-colors duration-300 font-medium">Produk</a>
+                    <a href="#contact" class="nav-link text-white hover:text-green-200 transition-colors duration-300 font-medium">Kontak</a>
+                    <a href="store.html" class="bg-white text-green-600 px-6 py-2 rounded-full font-semibold hover:bg-green-50 transition-all duration-300 btn-shine">
+                        Beli Sekarang
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-white hover:text-green-200 transition-colors duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu md:hidden absolute top-full left-0 right-0 bg-green-700 border-t border-green-600">
+            <div class="px-4 pt-2 pb-4 space-y-2">
+                <a href="#home" class="block px-3 py-2 text-white hover:bg-green-600 rounded transition-colors duration-300">Beranda</a>
+                <a href="#about" class="block px-3 py-2 text-white hover:bg-green-600 rounded transition-colors duration-300">Tentang</a>
+                <a href="#products" class="block px-3 py-2 text-white hover:bg-green-600 rounded transition-colors duration-300">Produk</a>
+                <a href="#contact" class="block px-3 py-2 text-white hover:bg-green-600 rounded transition-colors duration-300">Kontak</a>
+                <a href="store.html" class="block px-3 py-2 bg-white text-green-600 rounded font-semibold hover:bg-green-50 transition-colors duration-300 text-center">
+                    Beli Sekarang
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center gradient-bg overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute transform rotate-12 -top-20 -right-20 w-96 h-96 rounded-full border-4 border-white"></div>
+            <div class="absolute transform -rotate-12 -bottom-20 -left-20 w-96 h-96 rounded-full border-4 border-white"></div>
+        </div>
+
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Hero Content -->
+                <div class="text-center lg:text-left" data-aos="fade-right" data-aos-duration="1000">
+                    <h1 class="hero-text text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                        Pemasok Pisang<br>
+                        <span class="text-yellow-300">Terbaik</span> Indonesia
+                    </h1>
+                    <p class="text-xl md:text-2xl text-green-100 mb-8 leading-relaxed">
+                        Dari jantung Purworejo, Jawa Tengah - Kami menyediakan pisang berkualitas premium untuk pasar lokal dan ekspor internasional
+                    </p>
+                    
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="store.html" class="bg-yellow-400 text-green-800 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition-all duration-300 btn-shine hover-scale">
+                            🛒 Belanja Sekarang
+                        </a>
+                        <a href="#about" class="glass text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:bg-opacity-20 transition-all duration-300">
+                            📖 Pelajari Lebih Lanjut
+                        </a>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="grid grid-cols-3 gap-6 mt-12" data-aos="fade-up" data-aos-delay="300">
+                        <div class="text-center">
+                            <div class="stat-number" data-target="500">0</div>
+                            <p class="text-green-100 font-medium">Ton/Bulan</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="stat-number" data-target="15">0</div>
+                            <p class="text-green-100 font-medium">Negara Ekspor</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="stat-number" data-target="25">0</div>
+                            <p class="text-green-100 font-medium">Tahun Pengalaman</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Image -->
+                <div class="text-center" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+                    <div class="relative">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/c6b31bad-fa21-4921-b2e4-734693fac5ac.png" 
+                             alt="Pisang Premium TelugeAgro" 
+                             class="floating rounded-3xl shadow-2xl max-w-full h-auto">
+                        <div class="absolute -top-6 -right-6 bg-yellow-400 text-green-800 px-4 py-2 rounded-full font-bold text-sm animate-pulse">
+                            ⭐ Premium Quality
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <a href="#about" class="text-white hover:text-green-200 transition-colors duration-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 gradient-bg-light">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Tentang TelugeAgro</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Perjalanan kami dimulai dari kecintaan terhadap pertanian berkelanjutan dan komitmen untuk memberikan yang terbaik
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- About Image -->
+                <div data-aos="fade-right" data-aos-duration="800">
+                    <div class="relative">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/bc180d7c-f474-4d27-aaa3-a156f71ced60.png" 
+                             alt="Kebun Pisang TelugeAgro" 
+                             class="rounded-3xl shadow-2xl hover-lift">
+                        <div class="absolute inset-0 bg-gradient-to-t from-green-900 via-transparent to-transparent rounded-3xl opacity-60"></div>
+                        <div class="absolute bottom-6 left-6 text-white">
+                            <h4 class="text-2xl font-bold">Kebun Seluas 50+ Hektar</h4>
+                            <p class="text-green-200">Di Purworejo, Jawa Tengah</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Content -->
+                <div data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
+                        Dari Tanah Jawa untuk Dunia
+                    </h3>
+                    <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                        Di TelugeAgro, kami berkomitmen untuk menyediakan pisang berkualitas terbaik langsung dari jantung kota Purworejo, Jawa Tengah. Sebagai pemasok dan spesialis terkemuka, kami berfokus pada praktik pertanian berkelanjutan untuk memastikan pisang kami segar, bergizi, dan siap untuk pasar lokal maupun ekspor internasional.
+                    </p>
+
+                    <!-- Features -->
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4 hover-scale">
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <span class="text-lg font-semibold text-gray-700">Pertanian Berkelanjutan & Ramah Lingkungan</span>
+                        </div>
+                        <div class="flex items-center space-x-4 hover-scale">
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                </svg>
+                            </div>
+                            <span class="text-lg font-semibold text-gray-700">Harga Kompetitif & Kualitas Premium</span>
+                        </div>
+                        <div class="flex items-center space-x-4 hover-scale">
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945"></path>
+                                </svg>
+                            </div>
+                            <span class="text-lg font-semibold text-gray-700">Ekspor ke 15+ Negara Internasional</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Produk Unggulan Kami</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Berbagai jenis pisang berkualitas premium untuk memenuhi kebutuhan pasar lokal dan internasional
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Product 1 -->
+                <div class="product-glow bg-white rounded-3xl p-8 hover-lift" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-center">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e1b5ce79-e92e-4403-ae44-7f1fd5f9e2d1.png" 
+                             alt="Pisang Cavendish" 
+                             class="w-32 h-32 mx-auto mb-6 rounded-2xl object-cover">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Pisang Cavendish</h3>
+                        <p class="text-gray-600 mb-6">Manis dan creamy, varietas premium yang paling populer untuk ekspor internasional</p>
+                        <div class="bg-green-50 p-4 rounded-2xl mb-6">
+                            <span class="text-2xl font-bold text-green-600">Rp 12.000</span>
+                            <span class="text-gray-500">/kg</span>
+                        </div>
+                        <a href="store.html" class="w-full bg-green-600 text-white py-3 rounded-full font-semibold hover:bg-green-700 transition-colors duration-300 btn-shine block text-center">
+                            Pesan Sekarang
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-glow bg-white rounded-3xl p-8 hover-lift" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-center">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ae569231-d922-40c1-b7b2-db4e98abb5e1.png" 
+                             alt="Pisang Organik" 
+                             class="w-32 h-32 mx-auto mb-6 rounded-2xl object-cover">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Pisang Organik</h3>
+                        <p class="text-gray-600 mb-6">Ditanam tanpa pestisida, pilihan sehat untuk pasar premium dan kesehatan keluarga</p>
+                        <div class="bg-green-50 p-4 rounded-2xl mb-6">
+                            <span class="text-2xl font-bold text-green-600">Rp 18.000</span>
+                            <span class="text-gray-500">/kg</span>
+                        </div>
+                        <a href="store.html" class="w-full bg-green-600 text-white py-3 rounded-full font-semibold hover:bg-green-700 transition-colors duration-300 btn-shine block text-center">
+                            Pesan Sekarang
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-glow bg-white rounded-3xl p-8 hover-lift" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-center">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0472f936-2084-4f51-9c4d-414ee6926919.png" 
+                             alt="Paket Ekspor" 
+                             class="w-32 h-32 mx-auto mb-6 rounded-2xl object-cover">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Paket Ekspor</h3>
+                        <p class="text-gray-600 mb-6">Kemasan khusus untuk distributor besar dengan standar internasional</p>
+                        <div class="bg-green-50 p-4 rounded-2xl mb-6">
+                            <span class="text-2xl font-bold text-green-600">Rp 15.000</span>
+                            <span class="text-gray-500">/kg</span>
+                            <div class="text-sm text-gray-500 mt-1">Min. 100kg</div>
+                        </div>
+                        <a href="store.html" class="w-full bg-green-600 text-white py-3 rounded-full font-semibold hover:bg-green-700 transition-colors duration-300 btn-shine block text-center">
+                            Pesan Sekarang
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View All Products Button -->
+            <div class="text-center mt-12" data-aos="fade-up" data-aos-delay="400">
+                <a href="store.html" class="inline-flex items-center bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-full font-bold text-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 btn-shine hover-scale">
+                    <span>Lihat Semua Produk</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 gradient-bg text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">Hubungi Kami</h2>
+                <p class="text-xl text-green-100 max-w-3xl mx-auto">
+                    Siap melayani kebutuhan pisang berkualitas Anda. Mari berkolaborasi untuk masa depan pertanian yang berkelanjutan
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Contact Info -->
+                <div data-aos="fade-right" data-aos-duration="800">
+                    <h3 class="text-3xl font-bold mb-8">Mari Berkolaborasi</h3>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-center space-x-4 hover-scale">
+                            <div class="glass p-4 rounded-full">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-semibold">Lokasi</h4>
+                                <p class="text-green-100">Purworejo, Jawa Tengah, Indonesia</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-4 hover-scale">
+                            <div class="glass p-4 rounded-full">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-semibold">Email</h4>
+                                <p class="text-green-100">info@telugeagro.com</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-4 hover-scale">
+                            <div class="glass p-4 rounded-full">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-semibold">WhatsApp</h4>
+                                <p class="text-green-100">+62 811-2638-318</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Media -->
+                    <div class="mt-8">
+                        <h4 class="text-xl font-semibold mb-4">Ikuti Kami</h4>
+                        <div class="flex space-x-4">
+                            <a href="https://www.instagram.com/teluge_agro" class="glass p-3 rounded-full hover:bg-white hover:bg-opacity-20 transition-all duration-300 hover-scale">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987s11.987-5.367 11.987-11.987C24.014 5.367 18.647.001 12.017.001zM8.449 16.988c-1.297 0-2.349-1.051-2.349-2.348s1.051-2.349 2.349-2.349 2.348 1.052 2.348 2.349-1.051 2.348-2.348 2.348zm7.718 0c-1.297 0-2.349-1.051-2.349-2.348s1.052-2.349 2.349-2.349c1.296 0 2.348 1.052 2.348 2.349s-1.052 2.348-2.348 2.348z"/>
+                                </svg>
+                            </a>
+                            <a href="https://www.facebook.com/TelugeAgro" class="glass p-3 rounded-full hover:bg-white hover:bg-opacity-20 transition-all duration-300 hover-scale">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
+                    <form id="contact-form" class="glass p-8 rounded-3xl">
+                        <h3 class="text-2xl font-bold mb-6">Kirim Pesan</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label for="name" class="block text-sm font-semibold mb-2">Nama Lengkap</label>
+                                <input type="text" id="name" name="name" required class="w-full bg-white bg-opacity-10 border border-white border-opacity-30 rounded-xl px-4 py-3 text-white placeholder-green-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-300">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-semibold mb-2">Email</label>
+                                <input type="email" id="email" name="email" required class="w-full bg-white bg-opacity-10 border border-white border-opacity-30 rounded-xl px-4 py-3 text-white placeholder-green-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-300">
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-sm font-semibold mb-2">Nomor WhatsApp</label>
+                                <input type="tel" id="phone" name="phone" class="w-full bg-white bg-opacity-10 border border-white border-opacity-30 rounded-xl px-4 py-3 text-white placeholder-green-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-300">
+                            </div>
+                            <div>
+                                <label for="message" class="block text-sm font-semibold mb-2">Pesan</label>
+                                <textarea id="message" name="message" rows="4" required class="w-full bg-white bg-opacity-10 border border-white border-opacity-30 rounded-xl px-4 py-3 text-white placeholder-green-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-300 resize-none"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-yellow-400 text-green-800 py-4 rounded-xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 btn-shine">
+                                Kirim Pesan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="logo Teluge.jpg" alt="TelugeAgro Logo" class="w-12 h-12 rounded-full">
+                        <span class="text-2xl font-bold">TelugeAgro</span>
+                    </div>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        Pemasok pisang premium dari Purworejo, Jawa Tengah, Indonesia. Berkomitmen untuk memberikan kualitas terbaik dengan praktik pertanian berkelanjutan.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/teluge_agro" class="bg-gray-800 p-3 rounded-full hover:bg-green-600 transition-colors duration-300">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987s11.987-5.367 11.987-11.987C24.014 5.367 18.647.001 12.017.001z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.facebook.com/TelugeAgro" class="bg-gray-800 p-3 rounded-full hover:bg-green-600 transition-colors duration-300">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Menu</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-300 hover:text-green-400 transition-colors duration-300">Beranda</a></li>
+                        <li><a href="#about" class="text-gray-300 hover:text-green-400 transition-colors duration-300">Tentang</a></li>
+                        <li><a href="#products" class="text-gray-300 hover:text-green-400 transition-colors duration-300">Produk</a></li>
+                        <li><a href="store.html" class="text-gray-300 hover:text-green-400 transition-colors duration-300">Toko</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Kontak</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li>Purworejo, Jawa Tengah</li>
+                        <li>+62 811-2638-318</li>
+                        <li>info@telugeagro.com</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-400">© 2025 TelugeAgro. Semua hak dilindungi undang-undang.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/628112638318?text=Halo%20TelugeAgro,%20saya%20tertarik%20dengan%20produk%20pisang%20Anda!" 
+       class="whatsapp-float" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       title="Hubungi WhatsApp">
+        📱
+    </a>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+        // Loading Screen
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(function() {
+                    document.getElementById('loading-screen').style.display = 'none';
+                }, 300);
+            }, 1000);
+        });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('glass');
+                navbar.style.backdropFilter = 'blur(10px)';
+            } else {
+                navbar.classList.remove('glass');
+                navbar.style.backdropFilter = 'none';
+            }
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileMenu.classList.remove('active');
+            });
+        });
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Statistics Counter Animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const increment = target / 100;
+                let current = 0;
+                
+                const updateCounter = () => {
+                    if (current < target) {
+                        current += increment;
+                        counter.textContent = Math.ceil(current);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target;
+                    }
+                };
+                
+                updateCounter();
+            });
+        }
+
+        // Trigger counter animation when in viewport
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        const statsSection = document.querySelector('.stat-number').parentElement.parentElement;
+        if (statsSection) {
+            observer.observe(statsSection);
+        }
+
+        // Contact Form Handling
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const phone = formData.get('phone');
+            const message = formData.get('message');
+            
+            // Show success message
+            showNotification('Pesan berhasil dikirim! Kami akan segera menghubungi Anda.', 'success');
+            
+            // Reset form
+            this.reset();
+            
+            // Optional: Send to WhatsApp
+            const whatsappMessage = `Halo TelugeAgro!%0A%0ANama: ${name}%0AEmail: ${email}%0APhone: ${phone}%0A%0APesan: ${message}`;
+            setTimeout(() => {
+                window.open(`https://wa.me/628112638318?text=${whatsappMessage}`, '_blank');
+            }, 2000);
+        });
+
+        // Notification System
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg text-white font-semibold transform translate-x-full transition-transform duration-300 ${
+                type === 'success' ? 'bg-green-600' : 'bg-red-600'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 4000);
+        }
+
+        // Navbar Active Link
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('text-yellow-300');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('text-yellow-300');
+                }
+            });
+        });
+
+        // Lazy Loading Images
+        const images = document.querySelectorAll('img[data-src]');
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.getAttribute('data-src');
+                    img.removeAttribute('data-src');
+                    observer.unobserve(img);
+                }
+            });
+        });
+
+        images.forEach(img => {
+            imageObserver.observe(img);
+        });
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('button, .btn-shine').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Add CSS for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.4);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+                pointer-events: none;
+            }
+            
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
