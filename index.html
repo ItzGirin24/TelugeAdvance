@@ -1183,7 +1183,7 @@
                     
                     // Update statistics
                     if (data.stats) {
-                        document.getElementById('stat1').textContent = data.stats.stat1 || '20+';
+                        document.getElementById('stat1').textContent = data.stats.stat1 || '10+';
                         document.getElementById('stat1Label').textContent = data.stats.stat1Label || 'Ton/Bulan';
                         document.getElementById('stat2').textContent = data.stats.stat2 || '15+';
                         document.getElementById('stat2Label').textContent = data.stats.stat2Label || 'Provinsi';
@@ -1635,7 +1635,7 @@
 
         // Randomize animation start for each stat
         function animateStats() {
-            animateCounter('stat1', 0, 20, 2000 + Math.random() * 1000);
+            animateCounter('stat1', 0, 10, 2000 + Math.random() * 1000);
             animateCounter('stat2', 0, 15, 2000 + Math.random() * 1000);
             animateCounter('stat3', 0, 9, 2000 + Math.random() * 1000);
         }
