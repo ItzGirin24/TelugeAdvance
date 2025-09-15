@@ -661,7 +661,7 @@
             try {
                 const productsQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
                 const querySnapshot = await getDocs(productsQuery);
-                
+
                 allProducts = [];
                 querySnapshot.forEach((doc) => {
                     const productData = doc.data();
@@ -672,6 +672,10 @@
                 });
 
                 loadRecommendations();
+                // Re-render cart with Firebase images after products are loaded
+                if (Object.keys(cartItems).length > 0) {
+                    renderCart();
+                }
             } catch (error) {
                 console.error('Error loading products:', error);
             }
@@ -766,21 +770,24 @@
             continueShopping.classList.remove('hidden');
             updateProgress(33);
 
-            container.innerHTML = items.map((item, index) => `
+            container.innerHTML = items.map((item, index) => {
+                // Find product image from Firebase products
+                const productData = allProducts.find(product => product.title === item.product);
+                const productImage = productData ? productData.image : 'https://via.placeholder.com/80x80?text=No+Image';
+
+                return `
                 <div class="cart-item bg-gray-50 rounded-xl p-6 mb-4 border border-gray-200" data-product="${item.product}" data-aos="fade-up" data-aos-delay="${index * 100}">
                     <div class="flex items-center space-x-4">
-                        <!-- Product Image Placeholder -->
-                        <div class="w-20 h-20 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                            <span class="text-3xl">🍌</span>
-                        </div>
-                        
+                        <!-- Product Image -->
+                        <img src="${productImage}" alt="${item.product}" class="w-20 h-20 object-cover rounded-xl flex-shrink-0" onerror="this.src='https://via.placeholder.com/80x80?text=No+Image'">
+
                         <!-- Product Info -->
                         <div class="flex-1 min-w-0">
                             <h3 class="text-lg font-semibold text-gray-800 mb-1">${item.product}</h3>
                             <p class="text-green-600 font-bold text-lg">Rp ${formatPrice(item.price)}/kg</p>
                             <p class="text-sm text-gray-500">Subtotal: Rp ${formatPrice(item.price * item.quantity)}</p>
                         </div>
-                        
+
                         <!-- Quantity Controls -->
                         <div class="flex items-center space-x-4">
                             <div class="quantity-control">
@@ -788,7 +795,7 @@
                                 <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="1000" onchange="updateQuantity('${item.product}', this.value)">
                                 <button class="quantity-btn" onclick="increaseQuantity('${item.product}')">+</button>
                             </div>
-                            
+
                             <button onclick="removeFromCart('${item.product}')" class="text-red-500 hover:text-red-700 transition-colors duration-300 p-2 hover:bg-red-50 rounded-lg" title="Hapus dari keranjang">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -797,7 +804,8 @@
                         </div>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Quantity Management
