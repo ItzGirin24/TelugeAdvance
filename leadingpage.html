@@ -8,6 +8,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/emailjs.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
         
@@ -184,8 +187,6 @@
         /* Hero Text Animation */
         .hero-text {
             background: linear-gradient(135deg, #ffffff, #f0fdf4);
-        .hero-text {
-            background: linear-gradient(135deg, #ffffff, #f0fdf4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -202,7 +203,8 @@
             .hero-text { font-size: 2rem; }
         }
 
-        /* WhatsApp Float Button */
+        /* WhatsApp Float But
+         */
         .whatsapp-float {
             position: fixed;
             width: 60px;
@@ -329,7 +331,7 @@
                         <span class="text-yellow-300">Terbaik</span> Indonesia
                     </h1>
                     <p class="text-xl md:text-2xl text-green-100 mb-8 leading-relaxed">
-                        Dari jantung Purworejo, Jawa Tengah - Kami menyediakan pisang berkualitas premium untuk pasar lokal dan ekspor internasional
+                        Dari jantung Purworejo, Jawa Tengah - Kami menyediakan pisang berkualitas untuk pasar lokal dan ekspor internasional
                     </p>
                     
                     <!-- CTA Buttons -->
@@ -345,15 +347,15 @@
                     <!-- Statistics -->
                     <div class="grid grid-cols-3 gap-6 mt-12" data-aos="fade-up" data-aos-delay="300">
                         <div class="text-center">
-                            <div class="stat-number" data-target="500">0</div>
+                            <div class="stat-number" data-target="20">0</div>
                             <p class="text-white font-medium">Ton/Bulan</p>
                         </div>
                         <div class="text-center">
                             <div class="stat-number" data-target="15">0</div>
-                            <p class="text-white font-medium">Negara Ekspor</p>
+                            <p class="text-white font-medium">Pengiriman Ke - Provinsi</p>
                         </div>
                         <div class="text-center">
-                            <div class="stat-number" data-target="25">0</div>
+                            <div class="stat-number" data-target="9">0</div>
                             <p class="text-white font-medium">Tahun Pengalaman</p>
                         </div>
                     </div>
@@ -366,7 +368,7 @@
                              alt="Pisang Premium TelugeAgro" 
                              class="floating rounded-3xl shadow-2xl max-w-full h-auto">
                         <div class="absolute -top-6 -right-6 bg-yellow-400 text-green-800 px-4 py-2 rounded-full font-bold text-sm animate-pulse">
-                            ⭐ Premium Quality
+                            ⭐ Kulatias Terbaik
                         </div>
                     </div>
                 </div>
@@ -411,7 +413,7 @@
                 <!-- About Content -->
                 <div data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
                     <h3 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-                        Dari Tanah Jawa untuk Dunia
+                        Dari Tanah Jawa untuk Indonesia
                     </h3>
                     <p class="text-lg text-gray-600 mb-8 leading-relaxed">
                         Di TelugeAgro, kami berkomitmen untuk menyediakan pisang berkualitas terbaik langsung dari jantung kota Purworejo, Jawa Tengah. Sebagai pemasok dan spesialis terkemuka, kami berfokus pada praktik pertanian berkelanjutan untuk memastikan pisang kami segar, bergizi, dan siap untuk pasar lokal maupun ekspor internasional.
@@ -441,7 +443,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945"></path>
                                 </svg>
                             </div>
-                            <span class="text-lg font-semibold text-gray-700">Ekspor ke 15+ Negara Internasional</span>
+                            <span class="text-lg font-semibold text-gray-700">Pengiriman ke 5+ Provinsi di Indonesia</span>
                         </div>
                     </div>
                 </div>
@@ -675,13 +677,13 @@
                     <ul class="space-y-2 text-gray-300">
                         <li>Purworejo, Jawa Tengah</li>
                         <li>+62 811-2638-318</li>
-                        <li>info@telugeagro.com</li>
+                        <li>teluge.agro@gmail.com</li>
                     </ul>
                 </div>
             </div>
 
             <div class="border-t border-gray-800 mt-8 pt-8 text-center">
-                <p class="text-gray-400">© 2025 TelugeAgro. Semua hak dilindungi undang-undang.</p>
+                <p class="text-gray-400">© 2017 TelugeAgro. Semua hak dilindungi undang-undang.</p>
             </div>
         </div>
     </footer>
@@ -697,12 +699,30 @@
 
     <!-- Scripts -->
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB2sLqWwZIxr65c3CcNgKCCjmDTeDlSnfY",
+            authDomain: "telugeagro2025.firebaseapp.com",
+            projectId: "telugeagro2025",
+            storageBucket: "telugeagro2025.firebasestorage.app",
+            messagingSenderId: "1029963109637",
+            appId: "1:1029963109637:web:86824d0db45e1489b3136c",
+            measurementId: "G-XF1JDPME66"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         // Initialize AOS
         AOS.init({
             duration: 800,
             once: true,
             offset: 100
         });
+
+        // Initialize EmailJS
+        emailjs.init('sFdQfCubtceDeQ0i3');
 
         // Loading Screen
         window.addEventListener('load', function() {
@@ -757,45 +777,71 @@
         });
 
         // Statistics Counter Animation
+        let animationTriggered = false; // Flag to prevent multiple animations
+
         function animateCounters() {
+            if (animationTriggered) return; // Prevent multiple animations
+            animationTriggered = true;
+
             const counters = document.querySelectorAll('.stat-number');
-            
+
             counters.forEach(counter => {
                 const target = parseInt(counter.getAttribute('data-target'));
-                const increment = target / 100;
+                const duration = 2000; // 2 seconds animation
+                const steps = 60; // 60 FPS
+                const increment = target / steps;
                 let current = 0;
-                
+                let step = 0;
+
                 const updateCounter = () => {
-                    if (current < target) {
-                        current += increment;
-                        counter.textContent = Math.ceil(current);
-                        requestAnimationFrame(updateCounter);
-                    } else {
+                    step++;
+                    current += increment;
+                    if (current >= target || step >= steps) {
                         counter.textContent = target;
+                    } else {
+                        counter.textContent = Math.floor(current);
+                        setTimeout(updateCounter, duration / steps);
                     }
                 };
-                
+
                 updateCounter();
             });
         }
 
-        // Trigger counter animation when in viewport
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounters();
-                    observer.unobserve(entry.target);
-                }
-            });
-        });
+        // Check if stats section is in viewport on load
+        function isElementInViewport(el) {
+            const rect = el.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
 
-        const statsSection = document.querySelector('.stat-number').parentElement.parentElement;
+        // Trigger animation on load if visible, or on scroll
+        const statsSection = document.querySelector('.stat-number')?.parentElement?.parentElement;
         if (statsSection) {
-            observer.observe(statsSection);
+            // Check on load
+            if (isElementInViewport(statsSection)) {
+                setTimeout(animateCounters, 500); // Small delay to ensure DOM is ready
+            } else {
+                // Use IntersectionObserver for scroll trigger
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && !animationTriggered) {
+                            animateCounters();
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                observer.observe(statsSection);
+            }
         }
 
         // Contact Form Handling
-        document.getElementById('contact-form').addEventListener('submit', function(e) {
+       /* document.getElementById('contact-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const formData = new FormData(this);
