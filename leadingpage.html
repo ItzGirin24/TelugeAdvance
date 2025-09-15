@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -271,7 +272,7 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-40 transition-all duration-300" id="navbar">
+    <nav class="fixed top-0 w-full z-40 transition-all duration-300" id="navbar" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%);">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16 md:h-20">
                 <!-- Logo -->
@@ -922,54 +923,62 @@
         }
 
         // Contact Form Handling
-        document.getElementById('contact-form').addEventListener('submit', function(e) {
-            e.preventDefault();
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init('sFdQfCubtceDeQ0i3');
+            }
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
 
-            // Show loading state
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Mengirim...';
-            submitBtn.disabled = true;
+                    // Show loading state
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.textContent;
+                    submitBtn.textContent = 'Mengirim...';
+                    submitBtn.disabled = true;
 
-            const formData = new FormData(this);
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const phone = formData.get('phone');
-            const message = formData.get('message');
+                    const formData = new FormData(this);
+                    const name = formData.get('name');
+                    const email = formData.get('email');
+                    const phone = formData.get('phone');
+                    const message = formData.get('message');
 
-            // Prepare template parameters for EmailJS
-            const templateParams = {
-                from_name: name,
-                from_email: email,
-                phone: phone,
-                message: message,
-                to_email: 'teluge.agro@gmail.com'
-            };
+                    // Prepare template parameters for EmailJS
+                    const templateParams = {
+                        from_name: name,
+                        from_email: email,
+                        phone: phone,
+                        message: message,
+                        to_email: 'teluge.agro@gmail.com'
+                    };
 
-            // Send email using EmailJS
-            emailjs.send('service_telugeagro', 'template_contact', templateParams)
-                .then(function(response) {
-                    console.log('Email sent successfully:', response);
-                    showNotification('Pesan berhasil dikirim! Kami akan segera menghubungi Anda.', 'success');
+                    // Send email using EmailJS
+                    emailjs.send('service_telugeagro', 'template_contact', templateParams)
+                        .then(function(response) {
+                            console.log('Email sent successfully:', response);
+                            showNotification('Pesan berhasil dikirim! Kami akan segera menghubungi Anda.', 'success');
 
-                    // Reset form
-                    document.getElementById('contact-form').reset();
+                            // Reset form
+                            document.getElementById('contact-form').reset();
 
-                    // Optional: Send to WhatsApp after successful email
-                    const whatsappMessage = `Halo TelugeAgro!%0A%0ASaya telah mengirim pesan melalui website:%0A%0ANama: ${name}%0AEmail: ${email}%0APhone: ${phone}%0A%0APesan: ${message}`;
-                    setTimeout(() => {
-                        window.open(`https://wa.me/628112638318?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-                    }, 2000);
-                })
-                .catch(function(error) {
-                    console.error('Email sending failed:', error);
-                    showNotification('Gagal mengirim pesan. Silakan coba lagi atau hubungi kami langsung.', 'error');
-                })
-                .finally(function() {
-                    // Reset button state
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
+                            // Optional: Send to WhatsApp after successful email
+                            const whatsappMessage = `Halo TelugeAgro!%0A%0ASaya telah mengirim pesan melalui website:%0A%0ANama: ${name}%0AEmail: ${email}%0APhone: ${phone}%0A%0APesan: ${message}`;
+                            setTimeout(() => {
+                                window.open(`https://wa.me/628112638318?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+                            }, 2000);
+                        })
+                        .catch(function(error) {
+                            console.error('Email sending failed:', error);
+                            showNotification('Gagal mengirim pesan. Silakan coba lagi atau hubungi kami langsung.', 'error');
+                        })
+                        .finally(function() {
+                            // Reset button state
+                            submitBtn.textContent = originalText;
+                            submitBtn.disabled = false;
+                        });
                 });
+            }
         });
         // Notification System
         function showNotification(message, type = 'success') {
