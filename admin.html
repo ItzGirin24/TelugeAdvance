@@ -721,17 +721,24 @@
 
         // Delete order
         async function deleteOrder(orderId) {
+            console.log('deleteOrder called with orderId:', orderId);
             if (confirm('Are you sure you want to delete this order? This action cannot be undone.')) {
+                console.log('User confirmed deletion');
                 try {
+                    console.log('Attempting to delete doc:', orderId);
                     await deleteDoc(doc(db, 'orders', orderId));
+                    console.log('Doc deleted successfully');
                     loadOrders(); // Reload orders to reflect changes
                     showToast('Order deleted successfully', 'success');
                 } catch (error) {
                     console.error('Error deleting order:', error);
                     showToast('Error deleting order', 'error');
                 }
+            } else {
+                console.log('User cancelled deletion');
             }
         }
+        window.deleteOrder = deleteOrder;
 
         // Web content management functions
         async function loadWebContent() {
