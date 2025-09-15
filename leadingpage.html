@@ -365,7 +365,7 @@
                 <div class="text-center" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
                     <div class="relative">
                         <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/c6b31bad-fa21-4921-b2e4-734693fac5ac.png" 
-                             alt="Pisang Premium TelugeAgro" 
+                             alt="Pisang Terbaik TelugeAgro" 
                              class="floating rounded-3xl shadow-2xl max-w-full h-auto">
                         <div class="absolute -top-6 -right-6 bg-yellow-400 text-green-800 px-4 py-2 rounded-full font-bold text-sm animate-pulse">
                             ⭐ Kulatias Terbaik
@@ -435,7 +435,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                                 </svg>
                             </div>
-                            <span class="text-lg font-semibold text-gray-700">Harga Kompetitif & Kualitas Premium</span>
+                            <span class="text-lg font-semibold text-gray-700">Harga Kompetitif & Kualitas Terbaik</span>
                         </div>
                         <div class="flex items-center space-x-4 hover-scale">
                             <div class="bg-green-100 p-3 rounded-full">
@@ -457,7 +457,7 @@
             <div class="text-center mb-16" data-aos="fade-up">
                 <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Produk Unggulan Kami</h2>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Berbagai jenis pisang berkualitas premium untuk memenuhi kebutuhan pasar lokal dan internasional
+                    Berbagai jenis pisang berkualitas untuk memenuhi kebutuhan pasar lokal dan internasional
                 </p>
             </div>
 
@@ -722,17 +722,33 @@
         });
 
         // Initialize EmailJS
-        emailjs.init('sFdQfCubtceDeQ0i3');
+        if (typeof emailjs !== 'undefined') {
+            emailjs.init('sFdQfCubtceDeQ0i3');
+        }
 
         // Loading Screen
         window.addEventListener('load', function() {
             setTimeout(function() {
-                document.getElementById('loading-screen').style.opacity = '0';
-                setTimeout(function() {
-                    document.getElementById('loading-screen').style.display = 'none';
-                }, 300);
+                const loading = document.getElementById('loading-screen');
+                if (loading) {
+                    loading.style.opacity = '0';
+                    setTimeout(function() {
+                        loading.style.display = 'none';
+                    }, 300);
+                }
             }, 1000);
         });
+
+        // Fallback: Hide loading screen after 3 seconds if load event doesn't fire
+        setTimeout(function() {
+            const loading = document.getElementById('loading-screen');
+            if (loading && loading.style.display !== 'none') {
+                loading.style.opacity = '0';
+                setTimeout(function() {
+                    loading.style.display = 'none';
+                }, 300);
+            }
+        }, 3000);
 
         // Navbar Scroll Effect
         window.addEventListener('scroll', function() {
@@ -841,21 +857,21 @@
         }
 
         // Contact Form Handling
-       /* document.getElementById('contact-form').addEventListener('submit', function(e) {
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const formData = new FormData(this);
             const name = formData.get('name');
             const email = formData.get('email');
             const phone = formData.get('phone');
             const message = formData.get('message');
-            
+
             // Show success message
             showNotification('Pesan berhasil dikirim! Kami akan segera menghubungi Anda.', 'success');
-            
+
             // Reset form
             this.reset();
-            
+
             // Optional: Send to WhatsApp
             const whatsappMessage = `Halo TelugeAgro!%0A%0ANama: ${name}%0AEmail: ${email}%0APhone: ${phone}%0A%0APesan: ${message}`;
             setTimeout(() => {
