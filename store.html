@@ -3,77 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TelugeAgro - Toko Online Pisang Premium</title>
+    <title>TelugeAgro - Toko Online Pisang </title>
     <link rel="icon" href="https://raw.githubusercontent.com/ItzGirin24/TelugeAgro/refs/heads/main/logo%20Teluge.jpg" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
-        import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyB2sLqWwZIxr65c3CcNgKCCjmDTeDlSnfY",
-            authDomain: "telugeagro2025.firebaseapp.com",
-            projectId: "telugeagro2025",
-            storageBucket: "telugeagro2025.firebasestorage.app",
-            messagingSenderId: "1029963109637",
-            appId: "1:1029963109637:web:86824d0db45e1489b3136c",
-            measurementId: "G-XF1JDPME66"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Function to update pending orders count display
-        function updatePendingOrdersCount(count) {
-            const countElement = document.getElementById('pending-count');
-            const countMobileElement = document.getElementById('pending-count-mobile');
-            if (countElement) {
-                countElement.textContent = count;
-                if (count === 0) {
-                    countElement.classList.add('hidden');
-                } else {
-                    countElement.classList.remove('hidden');
-                }
-            }
-            if (countMobileElement) {
-                countMobileElement.textContent = count;
-                if (count === 0) {
-                    countMobileElement.classList.add('hidden');
-                } else {
-                    countMobileElement.classList.remove('hidden');
-                }
-            }
-        }
-
-        // Function to load pending orders count
-        async function loadPendingOrdersCount() {
-            try {
-                const ordersQuery = query(collection(db, 'orders'), orderBy('timestamp', 'desc'));
-                const querySnapshot = await getDocs(ordersQuery);
-                let pendingCount = 0;
-
-                querySnapshot.forEach((doc) => {
-                    const order = doc.data();
-                    const status = order.status || 'pending';
-                    if (status === 'pending') {
-                        pendingCount++;
-                    }
-                });
-
-                updatePendingOrdersCount(pendingCount);
-            } catch (error) {
-                console.error('Error loading pending orders count:', error);
-            }
-        }
-
-        loadPendingOrdersCount();
-
-        window.loadPendingOrdersCount = loadPendingOrdersCount;
-        window.updatePendingOrdersCount = updatePendingOrdersCount;
-    </script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
         
@@ -165,7 +100,31 @@
             left: 100%;
         }
 
-        /* Quick View Modal */
+        /* Admin Panel Styles */
+        .admin-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        .admin-btn {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .admin-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.1);
+        }
+
+        /* Modal Styles */
         .modal {
             backdrop-filter: blur(10px);
             animation: modalFadeIn 0.3s ease-out;
@@ -180,6 +139,30 @@
                 opacity: 1;
                 transform: scale(1);
             }
+        }
+
+        /* Toast Animation */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
         }
 
         /* Button Animations */
@@ -408,30 +391,6 @@
             color: #22c55e;
         }
 
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            padding: 16px 24px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
-            z-index: 1000;
-            transform: translateX(400px);
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-        
-        .toast.show {
-            transform: translateX(0);
-        }
-        
-        .toast.error {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
-        }
-
         /* Responsive Grid */
         .products-grid {
             display: grid;
@@ -490,6 +449,7 @@
             .product-card { margin-bottom: 16px; }
             .floating-cart { bottom: 80px; right: 16px; }
             .whatsapp-float { bottom: 140px; right: 16px; }
+            .admin-panel { bottom: 16px; left: 16px; }
         }
     </style>
 </head>
@@ -568,7 +528,7 @@
                     🍌 Toko Online <span class="text-yellow-300">TelugeAgro</span>
                 </h1>
                 <p class="text-xl md:text-2xl text-green-100 mb-8 max-w-3xl mx-auto">
-                    Belanja Pisang Premium Langsung dari Kebun. Segar, Berkualitas, dan Siap Kirim ke Seluruh Indonesia!
+                    Belanja Pisang Terbaik Langsung dari Kebun. Segar, Berkualitas, dan Siap Kirim ke Seluruh Indonesia!
                 </p>
                 
                 <!-- Quick Stats -->
@@ -579,7 +539,7 @@
                     </div>
                     <div class="text-center">
                         <div class="text-3xl font-bold text-yellow-300">⭐</div>
-                        <p class="text-green-100 font-medium">Kualitas Premium</p>
+                        <p class="text-green-100 font-medium">Kualitas Terbaik</p>
                     </div>
                     <div class="text-center">
                         <div class="text-3xl font-bold text-yellow-300">📱</div>
@@ -605,7 +565,7 @@
                 <!-- Filter Tabs -->
                 <div class="flex flex-wrap gap-3" data-aos="fade-left">
                     <button class="filter-tab active" data-filter="all">Semua Produk</button>
-                    <button class="filter-tab" data-filter="premium">Premium</button>
+                    <button class="filter-tab" data-filter="berkualitas">Berkualitas</button>
                     <button class="filter-tab" data-filter="organic">Organik</button>
                     <button class="filter-tab" data-filter="export">Ekspor</button>
                 </div>
@@ -628,285 +588,126 @@
 
             <!-- Products Grid -->
             <div id="products-grid" class="products-grid mb-16" style="display: none;">
-                <!-- Product 1 - Pisang Cavendish -->
-                <div class="product-card bg-white rounded-2xl p-6 shadow-lg" data-category="premium" data-aos="fade-up" data-aos-delay="100">
-                    <div class="product-badge">BEST SELLER</div>
-                    <div class="relative mb-4">
-                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/6687a905-5ec4-43e4-9738-c2cc0c9db9b7.png" 
-                             alt="Pisang Cavendish Premium" 
-                             class="w-full h-48 object-cover rounded-xl mb-4">
-                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-colors duration-300" onclick="toggleWishlist(this)">
-                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Pisang Cavendish Premium</h3>
-                    <p class="text-gray-600 mb-4 text-sm">Manis dan creamy, varietas premium yang paling populer untuk ekspor internasional</p>
-                    
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="price-tag">Rp 12.000/kg</div>
-                        <div class="flex items-center text-yellow-500">
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                            </svg>
-                            <span class="text-sm ml-1">4.8 (124)</span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center gap-3">
-                        <div class="quantity-selector">
-                            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                            <input type="number" class="quantity-input" value="1" min="1" max="100">
-                            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
-                        </div>
-                        <button class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 btn-bounce" onclick="addToCart('Pisang Cavendish Premium', 12000, this)">
-                            Tambah ke Keranjang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Product 2 - Pisang Organik -->
-                <div class="product-card bg-white rounded-2xl p-6 shadow-lg" data-category="organic" data-aos="fade-up" data-aos-delay="200">
-                    <div class="product-badge organic">ORGANIK</div>
-                    <div class="relative mb-4">
-                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ae569231-d922-40c1-b7b2-db4e98abb5e1.png" 
-                             alt="Pisang Organik" 
-                             class="w-full h-48 object-cover rounded-xl mb-4">
-                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-colors duration-300" onclick="toggleWishlist(this)">
-                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Pisang Organik</h3>
-                    <p class="text-gray-600 mb-4 text-sm">Ditanam tanpa pestisida, pilihan sehat untuk pasar premium dan kesehatan keluarga</p>
-                    
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="price-tag">Rp 18.000/kg</div>
-                        <div class="flex items-center text-yellow-500">
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                            </svg>
-                            <span class="text-sm ml-1">4.9 (89)</span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center gap-3">
-                        <div class="quantity-selector">
-                            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                            <input type="number" class="quantity-input" value="1" min="1" max="100">
-                            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
-                        </div>
-                        <button class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 btn-bounce" onclick="addToCart('Pisang Organik', 18000, this)">
-                            Tambah ke Keranjang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Product 3 - Paket Ekspor -->
-                <div class="product-card bg-white rounded-2xl p-6 shadow-lg" data-category="export" data-aos="fade-up" data-aos-delay="300">
-                    <div class="product-badge new">EXPORT GRADE</div>
-                    <div class="relative mb-4">
-                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0472f936-2084-4f51-9c4d-414ee6926919.png" 
-                             alt="Paket Ekspor Bulk" 
-                             class="w-full h-48 object-cover rounded-xl mb-4">
-                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-colors duration-300" onclick="toggleWishlist(this)">
-                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Paket Ekspor Bulk</h3>
-                    <p class="text-gray-600 mb-4 text-sm">Kemasan khusus untuk distributor besar dengan standar internasional (Min. 100kg)</p>
-                    
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="price-tag">Rp 15.000/kg</div>
-                        <div class="flex items-center text-yellow-500">
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                            </svg>
-                            <span class="text-sm ml-1">4.7 (67)</span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center gap-3">
-                        <div class="quantity-selector">
-                            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                            <input type="number" class="quantity-input" value="100" min="100" max="1000" step="10">
-                            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
-                        </div>
-                        <button class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 btn-bounce" onclick="addToCart('Paket Ekspor Bulk', 15000, this)">
-                            Tambah ke Keranjang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Product 4 - Pisang Plantain -->
-                <div class="product-card bg-white rounded-2xl p-6 shadow-lg" data-category="premium" data-aos="fade-up" data-aos-delay="400">
-                    <div class="relative mb-4">
-                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/bd310699-54f4-480f-a0a5-4f8c3610f6d0.png" 
-                             alt="Pisang Plantain" 
-                             class="w-full h-48 object-cover rounded-xl mb-4">
-                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-colors duration-300" onclick="toggleWishlist(this)">
-                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Pisang Plantain</h3>
-                    <p class="text-gray-600 mb-4 text-sm">Cocok untuk memasak dan menggoreng, tekstur padat dan rasa yang khas</p>
-                    
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="price-tag">Rp 14.000/kg</div>
-                        <div class="flex items-center text-yellow-500">
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                            </svg>
-                            <span class="text-sm ml-1">4.6 (45)</span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center gap-3">
-                        <div class="quantity-selector">
-                            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                            <input type="number" class="quantity-input" value="1" min="1" max="100">
-                            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
-                        </div>
-                        <button class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 btn-bounce" onclick="addToCart('Pisang Plantain', 14000, this)">
-                            Tambah ke Keranjang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Product 5 - Pisang Sutra -->
-                <div class="product-card bg-white rounded-2xl p-6 shadow-lg" data-category="premium" data-aos="fade-up" data-aos-delay="500">
-                    <div class="relative mb-4">
-                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/fd4dc657-9fda-44f4-b8a1-358a90c514e9.png" 
-                             alt="Pisang Sutra Mini" 
-                             class="w-full h-48 object-cover rounded-xl mb-4">
-                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-colors duration-300" onclick="toggleWishlist(this)">
-                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Pisang Sutra Mini</h3>
-                    <p class="text-gray-600 mb-4 text-sm">Pisang manis mini untuk camilan, ukuran kecil tapi rasa yang luar biasa</p>
-                    
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="price-tag">Rp 25.000/kg</div>
-                        <div class="flex items-center text-yellow-500">
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                            </svg>
-                            <span class="text-sm ml-1">4.9 (78)</span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center gap-3">
-                        <div class="quantity-selector">
-                            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                            <input type="number" class="quantity-input" value="1" min="1" max="100">
-                            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
-                        </div>
-                        <button class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 btn-bounce" onclick="addToCart('Pisang Sutra Mini', 25000, this)">
-                            Tambah ke Keranjang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Product 6 - Paket Cemilan -->
-                <div class="product-card bg-white rounded-2xl p-6 shadow-lg" data-category="premium" data-aos="fade-up" data-aos-delay="600">
-                    <div class="relative mb-4">
-                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a9d1dfe3-39bd-4e8b-b78b-dcae997768e0.png" 
-                             alt="Paket Cemilan Pisang" 
-                             class="w-full h-48 object-cover rounded-xl mb-4">
-                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-colors duration-300" onclick="toggleWishlist(this)">
-                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Paket Cemilan Pisang</h3>
-                    <p class="text-gray-600 mb-4 text-sm">Keripik pisang kering dan produk olahan pisang lainnya, siap santap</p>
-                    
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="price-tag">Rp 20.000/pack</div>
-                        <div class="flex items-center text-yellow-500">
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                            </svg>
-                            <span class="text-sm ml-1">4.8 (156)</span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center gap-3">
-                        <div class="quantity-selector">
-                            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                            <input type="number" class="quantity-input" value="1" min="1" max="50">
-                            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
-                        </div>
-                        <button class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 btn-bounce" onclick="addToCart('Paket Cemilan Pisang', 20000, this)">
-                            Tambah ke Keranjang
-                        </button>
-                    </div>
-                </div>
+                <!-- Products will be loaded from Firebase -->
             </div>
 
             <!-- Empty State -->
-            <div id="empty-state" class="empty-state" style="display: none;">
-                <div class="text-6xl mb-4">🔍</div>
-                <h3 class="text-2xl font-bold text-gray-700 mb-2">Produk tidak ditemukan</h3>
-                <p class="text-gray-500">Coba ubah kata kunci pencarian atau filter yang Anda gunakan</p>
+            <div id="empty-products" class="empty-state hidden">
+                <div class="text-8xl mb-6">🍌</div>
+                <h3 class="text-2xl font-bold text-gray-700 mb-2">Belum Ada Produk</h3>
+                <p class="text-gray-500 mb-6">Admin belum menambahkan produk. Silakan cek kembali nanti!</p>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="py-16 bg-white">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12" data-aos="fade-up">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Kenapa Pilih TelugeAgro?</h2>
-                <p class="text-xl text-gray-600">Komitmen kami untuk memberikan yang terbaik</p>
-            </div>
+    <!-- Admin Panel -->
+    <div class="admin-panel">
+        <button class="admin-btn" id="accountBtn" title="Admin Panel">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                <path d="M5 21c0-3 6-3 7-3s7 0 7 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </button>
+    </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="text-center p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-colors duration-300" data-aos="fade-up" data-aos-delay="100">
-                    <div class="text-5xl mb-4">🚚</div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Pengiriman Cepat</h3>
-                    <p class="text-gray-600">Gratis ongkir untuk pembelian minimal Rp 100.000</p>
-                </div>
-
-                <div class="text-center p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-colors duration-300" data-aos="fade-up" data-aos-delay="200">
-                    <div class="text-5xl mb-4">🌱</div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Organik & Segar</h3>
-                    <p class="text-gray-600">Langsung dari kebun tanpa pengawet kimia berbahaya</p>
-                </div>
-
-                <div class="text-center p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-colors duration-300" data-aos="fade-up" data-aos-delay="300">
-                    <div class="text-5xl mb-4">⭐</div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Kualitas Terjamin</h3>
-                    <p class="text-gray-600">Standar ekspor internasional dengan sertifikat resmi</p>
-                </div>
-
-                <div class="text-center p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-colors duration-300" data-aos="fade-up" data-aos-delay="400">
-                    <div class="text-5xl mb-4">💬</div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Customer Support</h3>
-                    <p class="text-gray-600">Tim support 24/7 siap membantu kebutuhan Anda</p>
-                </div>
-            </div>
+    <!-- Admin Menu -->
+    <div id="adminMenu" class="hidden fixed bottom-20 left-6 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 min-w-[240px]">
+        <div class="p-4 border-b border-gray-100">
+            <p class="text-sm font-semibold text-gray-800">TelugeAgro Admin</p>
+            <p class="text-xs text-gray-400">Product Manager</p>
         </div>
-    </section>
+        <div class="flex flex-col">
+            <button onclick="showAddProductModal()" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Tambah Produk
+            </button>
+            <button onclick="window.location.href='admin.html'" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                Kelola Pesanan
+            </button>
+            <button onclick="logoutAdmin()" class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+                Logout
+            </button>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div class="glass rounded-2xl p-8 w-80 max-w-full mx-4">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Admin Login</h2>
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <input type="text" id="username" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="password" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                </div>
+                <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors">
+                    Login
+                </button>
+                <button type="button" id="loginCancel" class="w-full mt-3 text-gray-600 hover:text-gray-800 transition-colors">
+                    Cancel
+                </button>
+            </form>
+            <p id="loginError" class="text-red-600 mt-3 text-center hidden"></p>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-60">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto mx-4">
+            <h2 id="productModalTitle" class="text-2xl font-bold text-center text-gray-800 mb-6">Tambah Produk</h2>
+            <form id="productForm" class="space-y-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="productTitle" class="block text-sm font-medium text-gray-700 mb-2">Nama Produk</label>
+                        <input type="text" id="productTitle" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="productPrice" class="block text-sm font-medium text-gray-700 mb-2">Harga (Rp/kg)</label>
+                        <input type="number" id="productPrice" step="100" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    </div>
+                </div>
+                <div>
+                    <label for="productDescription" class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
+                    <textarea id="productDescription" rows="3" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"></textarea>
+                </div>
+                <div>
+                    <label for="productImage" class="block text-sm font-medium text-gray-700 mb-2">URL Gambar</label>
+                    <input type="url" id="productImage" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="https://example.com/image.jpg">
+                </div>
+                <div>
+                    <label for="productCategory" class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+                    <select id="productCategory" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        <option value="">Pilih Kategori</option>
+                        <option value="berkualitas">Berkualitas</option>
+                        <option value="organic">Organik</option>
+                        <option value="export">Ekspor</option>
+                    </select>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" id="cancelProductBtn" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" class="flex-1 bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
+    <footer class="bg-gray-900 text-white py-12 mt-16">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-8">
                 <!-- Company Info -->
@@ -916,20 +717,8 @@
                         <span class="text-2xl font-bold">TelugeAgro</span>
                     </div>
                     <p class="text-gray-300 mb-4 leading-relaxed">
-                        Toko online pisang premium dari Purworejo, Jawa Tengah. Belanja mudah, kualitas terjamin, pengiriman cepat ke seluruh Indonesia.
+                        Toko online pisang Berkualitas dari Purworejo, Jawa Tengah. Belanja mudah, kualitas terjamin.
                     </p>
-                    <div class="flex space-x-4">
-                        <a href="https://www.instagram.com/teluge_agro" class="bg-gray-800 p-3 rounded-full hover:bg-green-600 transition-colors duration-300">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987s11.987-5.367 11.987-11.987C24.014 5.367 18.647.001 12.017.001z"/>
-                            </svg>
-                        </a>
-                        <a href="https://www.facebook.com/TelugeAgro" class="bg-gray-800 p-3 rounded-full hover:bg-green-600 transition-colors duration-300">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                            </svg>
-                        </a>
-                    </div>
                 </div>
 
                 <!-- Quick Links -->
@@ -937,8 +726,8 @@
                     <h3 class="text-xl font-bold mb-4">Menu</h3>
                     <ul class="space-y-2">
                         <li><a href="leadingpage.html" class="text-gray-300 hover:text-green-400 transition-colors duration-300">Beranda</a></li>
-                        <li><a href="leadingpage.html#about" class="text-gray-300 hover:text-green-400 transition-colors duration-300">Tentang</a></li>
                         <li><a href="#products" class="text-gray-300 hover:text-green-400 transition-colors duration-300">Produk</a></li>
+                        <li><a href="leadingpage.html#about" class="text-gray-300 hover:text-green-400 transition-colors duration-300">Tentang</a></li>
                         <li><a href="cart.html" class="text-gray-300 hover:text-green-400 transition-colors duration-300">Keranjang</a></li>
                     </ul>
                 </div>
@@ -961,20 +750,12 @@
         </div>
     </footer>
 
-    <!-- Floating Cart Button -->
-    <a href="cart.html" class="floating-cart bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 transition-all duration-300">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.1 5H19M7 13v8a2 2 0 002 2h10a2 2 0 002-2v-3"></path>
-        </svg>
-        <span id="floating-cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">0</span>
-    </a>
-
     <!-- WhatsApp Float Button -->
-    <a href="https://wa.me/628112638318?text=Halo%20TelugeAgro,%20saya%20tertarik%20untuk%20berbelanja%20pisang!" 
+    <a href="https://wa.me/628112638318?text=Halo%20TelugeAgro,%20saya%20butuh%20bantuan%20dengan%20produk%20Anda!" 
        class="whatsapp-float" 
        target="_blank" 
        rel="noopener noreferrer"
-       title="Hubungi WhatsApp">
+       title="Bantuan WhatsApp">
         📱
     </a>
 
@@ -983,8 +764,45 @@
         <span id="toast-message"></span>
     </div>
 
-    <!-- Scripts -->
-    <script>
+    <!-- Firebase and Scripts -->
+    <script type="module">
+        // Firebase SDK imports
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+        import {
+            getFirestore,
+            collection,
+            getDocs,
+            query,
+            orderBy,
+            addDoc,
+            updateDoc,
+            deleteDoc,
+            doc,
+            getDoc
+        } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB2sLqWwZIxr65c3CcNgKCCjmDTeDlSnfY",
+            authDomain: "telugeagro2025.firebaseapp.com",
+            projectId: "telugeagro2025",
+            storageBucket: "telugeagro2025.firebasestorage.app",
+            messagingSenderId: "1029963109637",
+            appId: "1:1029963109637:web:86824d0db45e1489b3136c",
+            measurementId: "G-XF1JDPME66"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Global variables
+        let allProducts = [];
+        let currentFilter = 'all';
+        let isAdminLoggedIn = false;
+        
+        // Admin credentials
+        const ADMIN_USERNAME = 'teluge@admin.app';
+        const ADMIN_PASSWORD = 'teluge2025';
+
         // Initialize AOS
         AOS.init({
             duration: 800,
@@ -992,273 +810,402 @@
             offset: 100
         });
 
-        // Global Variables
-        let cartItems = {};
-        let wishlistItems = new Set();
+        // Load products from Firebase
+        async function loadProducts() {
+            try {
+                showProductsLoading(true);
+                const productsQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+                const querySnapshot = await getDocs(productsQuery);
+                
+                allProducts = [];
+                querySnapshot.forEach((doc) => {
+                    const productData = doc.data();
+                    allProducts.push({
+                        id: doc.id,
+                        ...productData
+                    });
+                });
 
-        // Loading Screen
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                document.getElementById('loading-screen').style.opacity = '0';
-                setTimeout(function() {
-                    document.getElementById('loading-screen').style.display = 'none';
-                    showProducts();
-                }, 300);
-            }, 1500);
-        });
+                // If no products and it's the first load, add default products
+                if (allProducts.length === 0 && !localStorage.getItem('productsInitialized')) {
+                    await initializeDefaultProducts();
+                    await loadProducts(); // Reload after initialization
+                    return;
+                }
 
-        // Show Products with Animation
-        function showProducts() {
-            document.getElementById('products-loading').style.display = 'none';
-            document.getElementById('products-grid').style.display = 'grid';
+                showProductsLoading(false);
+                renderProducts();
+            } catch (error) {
+                console.error('Error loading products:', error);
+                showProductsLoading(false);
+                showToast('Gagal memuat produk', 'error');
+            }
+        }
+
+        // Initialize default products
+        async function initializeDefaultProducts() {
+            const defaultProducts = [
+                {
+                    title: 'Pisang Cavendish ',
+                    description: 'Manis dan creamy, varietas berkualitas yang paling populer untuk ekspor internasional',
+                    price: 12000,
+                    image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/6687a905-5ec4-43e4-9738-c2cc0c9db9b7.png',
+                    category: 'premium',
+                    createdAt: new Date()
+                },
+                {
+                    title: 'Pisang Organik',
+                    description: 'Ditanam tanpa pestisida, pilihan sehat untuk pasar premium dan kesehatan keluarga',
+                    price: 18000,
+                    image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ae569231-d922-40c1-b7b2-db4e98abb5e1.png',
+                    category: 'organic',
+                    createdAt: new Date()
+                },
+                {
+                    title: 'Paket Ekspor Bulk',
+                    description: 'Kemasan khusus untuk distributor besar dengan standar internasional (Min. 100kg)',
+                    price: 15000,
+                    image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0472f936-2084-4f51-9c4d-414ee6926919.png',
+                    category: 'export',
+                    createdAt: new Date()
+                },
+                {
+                    title: 'Pisang Plantain',
+                    description: 'Cocok untuk memasak dan menggoreng, tekstur padat dan rasa yang khas',
+                    price: 14000,
+                    image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/bd310699-54f4-480f-a0a5-4f8c3610f6d0.png',
+                    category: 'premium',
+                    createdAt: new Date()
+                },
+                {
+                    title: 'Pisang Sutra Mini',
+                    description: 'Pisang manis mini untuk camilan, ukuran kecil tapi rasa yang luar biasa',
+                    price: 25000,
+                    image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/fd4dc657-9fda-44f4-b8a1-358a90c514e9.png',
+                    category: 'premium',
+                    createdAt: new Date()
+                }
+            ];
+
+            try {
+                for (const product of defaultProducts) {
+                    await addDoc(collection(db, 'products'), product);
+                }
+                localStorage.setItem('productsInitialized', 'true');
+                showToast('Produk berhasil diinisialisasi!');
+            } catch (error) {
+                console.error('Error initializing products:', error);
+            }
+        }
+
+        // Show/hide loading state
+        function showProductsLoading(show) {
+            const loading = document.getElementById('products-loading');
+            const grid = document.getElementById('products-grid');
+            const empty = document.getElementById('empty-products');
             
-            // Animate products in
-            const products = document.querySelectorAll('.product-card');
-            products.forEach((product, index) => {
-                setTimeout(() => {
-                    product.style.opacity = '0';
-                    product.style.transform = 'translateY(50px)';
-                    product.style.transition = 'all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)';
+            if (show) {
+                loading.style.display = 'grid';
+                grid.style.display = 'none';
+                empty.classList.add('hidden');
+            } else {
+                loading.style.display = 'none';
+                grid.style.display = 'grid';
+            }
+        }
+
+        // Render products
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            const empty = document.getElementById('empty-products');
+            
+            // Filter products based on current filter
+            let filteredProducts = allProducts;
+            if (currentFilter !== 'all') {
+                filteredProducts = allProducts.filter(product => product.category === currentFilter);
+            }
+
+            // Apply search filter
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            if (searchTerm) {
+                filteredProducts = filteredProducts.filter(product => 
+                    product.title.toLowerCase().includes(searchTerm) ||
+                    product.description.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (filteredProducts.length === 0) {
+                grid.style.display = 'none';
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+            grid.style.display = 'grid';
+
+            grid.innerHTML = filteredProducts.map((product, index) => `
+                <div class="product-card bg-white rounded-2xl p-6 shadow-lg" data-category="${product.category}" data-aos="fade-up" data-aos-delay="${index * 100}">
+                    ${getBadgeHTML(product.category)}
+                    <div class="relative mb-4">
+                        <img src="${product.image}" 
+                             alt="${product.title}" 
+                             class="w-full h-48 object-cover rounded-xl mb-4"
+                             onerror="this.src='https://via.placeholder.com/300x200?text=Gambar+Tidak+Tersedia'">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-colors duration-300" onclick="toggleWishlist(this)">
+                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </button>
+                        ${isAdminLoggedIn ? `
+                        <div class="absolute top-2 left-2 flex gap-1">
+                            <button onclick="editProduct('${product.id}')" class="bg-blue-500 text-white p-2 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-300" title="Edit">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </button>
+                            <button onclick="deleteProduct('${product.id}', '${product.title}')" class="bg-red-500 text-white p-2 rounded-full shadow-lg hover:bg-red-600 transition-colors duration-300" title="Hapus">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        ` : ''}
+                    </div>
                     
-                    setTimeout(() => {
-                        product.style.opacity = '1';
-                        product.style.transform = 'translateY(0)';
-                    }, 50);
-                }, index * 100);
-            });
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">${product.title}</h3>
+                    <p class="text-gray-600 mb-4 text-sm">${product.description}</p>
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="price-tag">Rp ${formatPrice(product.price)}/kg</div>
+                        <div class="flex items-center text-yellow-500">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                            <span class="text-sm ml-1">4.8 (${Math.floor(Math.random() * 100) + 50})</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <div class="quantity-selector">
+                            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                            <input type="number" class="quantity-input" value="1" min="1" max="100">
+                            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                        </div>
+                        <button class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 btn-bounce" onclick="addToCart('${product.title}', ${product.price}, this)">
+                            Tambah ke Keranjang
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Re-initialize AOS for new elements
+            AOS.refresh();
         }
 
-        // Navbar Scroll Effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('glass');
-                navbar.style.backdropFilter = 'blur(10px)';
+        // Get badge HTML based on category
+        function getBadgeHTML(category) {
+            const badges = {
+                'berkualitas': '<div class="product-badge">BERKUALITAS</div>',
+                'organic': '<div class="product-badge organic">ORGANIK</div>',
+                'export': '<div class="product-badge new">EXPORT GRADE</div>'
+            };
+            return badges[category] || '';
+        }
+
+        // Format price
+        function formatPrice(price) {
+            return new Intl.NumberFormat('id-ID').format(price);
+        }
+
+        // Admin functions
+        function checkAdminStatus() {
+            isAdminLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+            if (isAdminLoggedIn) {
+                renderProducts(); // Re-render to show admin controls
+            }
+        }
+
+        // Show admin menu
+        function showAdminMenu() {
+            document.getElementById('adminMenu').classList.remove('hidden');
+        }
+
+        function hideAdminMenu() {
+            document.getElementById('adminMenu').classList.add('hidden');
+        }
+
+        // Admin login
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+
+        function hideLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('loginForm').reset();
+            document.getElementById('loginError').classList.add('hidden');
+        }
+
+        // Product management
+        function showAddProductModal() {
+            document.getElementById('productModalTitle').textContent = 'Tambah Produk';
+            document.getElementById('productForm').reset();
+            document.getElementById('productForm').removeAttribute('data-edit-id');
+            document.getElementById('productModal').classList.remove('hidden');
+            hideAdminMenu();
+        }
+
+        async function editProduct(productId) {
+            try {
+                const product = allProducts.find(p => p.id === productId);
+                if (!product) return;
+
+                document.getElementById('productModalTitle').textContent = 'Edit Produk';
+                document.getElementById('productTitle').value = product.title;
+                document.getElementById('productDescription').value = product.description;
+                document.getElementById('productPrice').value = product.price;
+                document.getElementById('productImage').value = product.image;
+                document.getElementById('productCategory').value = product.category;
+                document.getElementById('productForm').setAttribute('data-edit-id', productId);
+                document.getElementById('productModal').classList.remove('hidden');
+            } catch (error) {
+                console.error('Error loading product for edit:', error);
+                showToast('Gagal memuat data produk', 'error');
+            }
+        }
+
+        async function deleteProduct(productId, productTitle) {
+            if (!confirm(`Yakin ingin menghapus produk "${productTitle}"?`)) return;
+
+            try {
+                await deleteDoc(doc(db, 'products', productId));
+                showToast('Produk berhasil dihapus!');
+                await loadProducts();
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                showToast('Gagal menghapus produk', 'error');
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('adminLoggedIn');
+            isAdminLoggedIn = false;
+            hideAdminMenu();
+            renderProducts(); // Re-render to hide admin controls
+            showToast('Logout berhasil');
+        }
+
+        // Cart functions
+        function addToCart(productName, price, button) {
+            const card = button.closest('.product-card');
+            const quantityInput = card.querySelector('.quantity-input');
+            const quantity = parseInt(quantityInput.value) || 1;
+
+            // Get existing cart
+            let cart = JSON.parse(localStorage.getItem('cart')) || {};
+
+            // Add or update item
+            if (cart[productName]) {
+                cart[productName].quantity += quantity;
             } else {
-                navbar.classList.remove('glass');
-                navbar.style.backdropFilter = 'none';
-            }
-        });
-
-        // Mobile Menu Toggle
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        mobileMenuBtn.addEventListener('click', function() {
-            mobileMenu.classList.toggle('active');
-        });
-
-        // Close mobile menu when clicking a link
-        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                mobileMenu.classList.remove('active');
-            });
-        });
-
-        // Load Cart from LocalStorage
-        function loadCart() {
-            const cartData = localStorage.getItem('cart');
-            cartItems = JSON.parse(cartData) || {};
-            updateCartUI();
-        }
-
-        // Save Cart to LocalStorage
-        function saveCart() {
-            localStorage.setItem('cart', JSON.stringify(cartItems));
-        }
-
-        // Update Cart UI
-        function updateCartUI() {
-            const items = Object.values(cartItems);
-            const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
-            
-            document.getElementById('cart-count').textContent = cartCount;
-            document.getElementById('cart-count-mobile').textContent = cartCount;
-            document.getElementById('floating-cart-count').textContent = cartCount;
-
-            // Animate cart icon when items added
-            if (cartCount > 0) {
-                document.getElementById('cart-count').parentElement.classList.add('cart-shake');
-                setTimeout(() => {
-                    document.getElementById('cart-count').parentElement.classList.remove('cart-shake');
-                }, 600);
-            }
-        }
-
-        // Quantity Controls
-        function increaseQuantity(btn) {
-            const input = btn.parentElement.querySelector('.quantity-input');
-            const currentValue = parseInt(input.value);
-            const maxValue = parseInt(input.max) || 1000;
-            const step = parseInt(input.step) || 1;
-            
-            if (currentValue < maxValue) {
-                input.value = currentValue + step;
-            }
-        }
-
-        function decreaseQuantity(btn) {
-            const input = btn.parentElement.querySelector('.quantity-input');
-            const currentValue = parseInt(input.value);
-            const minValue = parseInt(input.min) || 1;
-            const step = parseInt(input.step) || 1;
-            
-            if (currentValue > minValue) {
-                input.value = currentValue - step;
-            }
-        }
-
-        // Add to Cart Function
-        function addToCart(productName, price, btn) {
-            const productCard = btn.closest('.product-card');
-            const quantityInput = productCard.querySelector('.quantity-input');
-            const quantity = parseInt(quantityInput.value);
-
-            if (cartItems[productName]) {
-                cartItems[productName].quantity += quantity;
-            } else {
-                cartItems[productName] = {
+                cart[productName] = {
                     product: productName,
                     price: price,
                     quantity: quantity
                 };
             }
 
-            saveCart();
-            updateCartUI();
+            // Save cart
+            localStorage.setItem('cart', JSON.stringify(cart));
 
-            // Button animation
-            btn.classList.add('add-to-cart-success');
-            const originalText = btn.textContent;
-            btn.textContent = '✓ Ditambahkan!';
-            
+            // Update cart count
+            updateCartCount();
+
+            // Show animation
+            button.classList.add('add-to-cart-success');
+            const cartIcon = document.getElementById('cart-count').parentElement;
+            cartIcon.classList.add('cart-shake');
+
             setTimeout(() => {
-                btn.classList.remove('add-to-cart-success');
-                btn.textContent = originalText;
-            }, 1500);
+                button.classList.remove('add-to-cart-success');
+                cartIcon.classList.remove('cart-shake');
+            }, 800);
 
-            // Show toast
-            showToast(`${productName} berhasil ditambahkan ke keranjang!`, 'success');
+            // Reset quantity
+            quantityInput.value = 1;
+
+            showToast(`${productName} ditambahkan ke keranjang!`);
         }
 
-        // Wishlist Toggle
-        function toggleWishlist(btn) {
-            const productCard = btn.closest('.product-card');
-            const productName = productCard.querySelector('h3').textContent;
-            const heartIcon = btn.querySelector('svg');
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || {};
+            const totalItems = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
+            
+            document.getElementById('cart-count').textContent = totalItems;
+            document.getElementById('cart-count-mobile').textContent = totalItems;
+        }
 
-            if (wishlistItems.has(productName)) {
-                wishlistItems.delete(productName);
-                heartIcon.setAttribute('fill', 'none');
-                btn.classList.remove('bg-red-50');
-                showToast(`${productName} dihapus dari wishlist`, 'info');
-            } else {
-                wishlistItems.add(productName);
-                heartIcon.setAttribute('fill', 'currentColor');
-                btn.classList.add('bg-red-50');
-                showToast(`${productName} ditambahkan ke wishlist!`, 'success');
+        // Quantity controls
+        function increaseQuantity(button) {
+            const input = button.parentElement.querySelector('.quantity-input');
+            const currentValue = parseInt(input.value) || 1;
+            const maxValue = parseInt(input.getAttribute('max')) || 100;
+            
+            if (currentValue < maxValue) {
+                input.value = currentValue + 1;
             }
-
-            // Save to localStorage
-            localStorage.setItem('wishlist', JSON.stringify([...wishlistItems]));
         }
 
-        // Load Wishlist
-        function loadWishlist() {
-            const wishlistData = localStorage.getItem('wishlist');
-            if (wishlistData) {
-                wishlistItems = new Set(JSON.parse(wishlistData));
-                
-                // Update UI
-                wishlistItems.forEach(productName => {
-                    const productCards = document.querySelectorAll('.product-card');
-                    productCards.forEach(card => {
-                        const cardTitle = card.querySelector('h3').textContent;
-                        if (cardTitle === productName) {
-                            const heartBtn = card.querySelector('button[onclick*="toggleWishlist"]');
-                            const heartIcon = heartBtn.querySelector('svg');
-                            heartIcon.setAttribute('fill', 'currentColor');
-                            heartBtn.classList.add('bg-red-50');
-                        }
-                    });
+        function decreaseQuantity(button) {
+            const input = button.parentElement.querySelector('.quantity-input');
+            const currentValue = parseInt(input.value) || 1;
+            const minValue = parseInt(input.getAttribute('min')) || 1;
+            
+            if (currentValue > minValue) {
+                input.value = currentValue - 1;
+            }
+        }
+
+        // Filter functions
+        function setupFilters() {
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Update active state
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Update current filter
+                    currentFilter = tab.getAttribute('data-filter');
+                    
+                    // Re-render products
+                    renderProducts();
                 });
-            }
+            });
         }
 
-        // Search Functionality
-        const searchInput = document.getElementById('search-input');
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            filterProducts(searchTerm);
-        });
-
-        // Filter Functionality
-        const filterTabs = document.querySelectorAll('.filter-tab');
-        filterTabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                // Update active tab
-                filterTabs.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-
-                // Filter products
-                const filterValue = this.getAttribute('data-filter');
-                filterProductsByCategory(filterValue);
+        // Search function
+        function setupSearch() {
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', () => {
+                renderProducts();
             });
-        });
+        }
 
-        // Filter Products by Search
-        function filterProducts(searchTerm) {
-            const products = document.querySelectorAll('.product-card');
-            let visibleCount = 0;
-
-            products.forEach(product => {
-                const title = product.querySelector('h3').textContent.toLowerCase();
-                const description = product.querySelector('p').textContent.toLowerCase();
-                
-                if (title.includes(searchTerm) || description.includes(searchTerm)) {
-                    product.style.display = 'block';
-                    visibleCount++;
-                } else {
-                    product.style.display = 'none';
-                }
-            });
-
-            // Show empty state if no results
-            const emptyState = document.getElementById('empty-state');
-            if (visibleCount === 0 && searchTerm.length > 0) {
-                emptyState.style.display = 'block';
+        // Wishlist function
+        function toggleWishlist(button) {
+            const heart = button.querySelector('svg');
+            if (heart.getAttribute('fill') === 'none') {
+                heart.setAttribute('fill', 'currentColor');
+                button.classList.add('text-red-600');
+                showToast('Ditambahkan ke wishlist!');
             } else {
-                emptyState.style.display = 'none';
+                heart.setAttribute('fill', 'none');
+                button.classList.remove('text-red-600');
+                showToast('Dihapus dari wishlist!');
             }
         }
 
-        // Filter Products by Category
-        function filterProductsByCategory(category) {
-            const products = document.querySelectorAll('.product-card');
-            let visibleCount = 0;
-
-            products.forEach(product => {
-                const productCategory = product.getAttribute('data-category');
-                
-                if (category === 'all' || productCategory === category) {
-                    product.style.display = 'block';
-                    visibleCount++;
-                } else {
-                    product.style.display = 'none';
-                }
-            });
-
-            // Show empty state if no results
-            const emptyState = document.getElementById('empty-state');
-            if (visibleCount === 0) {
-                emptyState.style.display = 'block';
-            } else {
-                emptyState.style.display = 'none';
-            }
-        }
-
-        // Toast Notification
+        // Toast notification
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toast-message');
@@ -1271,75 +1218,156 @@
             }, 3000);
         }
 
-        // Smooth Scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Initialize
+        // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
-            loadCart();
-            loadWishlist();
-        });
+            // Initialize
+            checkAdminStatus();
+            loadProducts();
+            updateCartCount();
+            setupFilters();
+            setupSearch();
 
-        // Price Formatter
-        function formatPrice(price) {
-            return new Intl.NumberFormat('id-ID').format(price);
-        }
-
-        // Add ripple effect to buttons
-        document.querySelectorAll('button, .btn-bounce').forEach(button => {
-            button.addEventListener('click', function(e) {
-                const ripple = document.createElement('span');
-                const rect = this.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height);
-                const x = e.clientX - rect.left - size / 2;
-                const y = e.clientY - rect.top - size / 2;
-                
-                ripple.style.width = ripple.style.height = size + 'px';
-                ripple.style.left = x + 'px';
-                ripple.style.top = y + 'px';
-                ripple.classList.add('ripple');
-                
-                this.appendChild(ripple);
-                
+            // Loading screen
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.opacity = '0';
                 setTimeout(() => {
-                    ripple.remove();
-                }, 600);
+                    document.getElementById('loading-screen').style.display = 'none';
+                }, 300);
+            }, 1000);
+
+            // Mobile menu
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+
+            // Navbar scroll effect
+            window.addEventListener('scroll', () => {
+                const navbar = document.getElementById('navbar');
+                if (window.scrollY > 50) {
+                    navbar.style.background = 'rgba(34, 197, 94, 0.95)';
+                    navbar.style.backdropFilter = 'blur(10px)';
+                } else {
+                    navbar.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%)';
+                    navbar.style.backdropFilter = 'none';
+                }
+            });
+
+            // Admin panel
+            document.getElementById('accountBtn').addEventListener('click', () => {
+                if (isAdminLoggedIn) {
+                    showAdminMenu();
+                } else {
+                    showLoginModal();
+                }
+            });
+
+            // Close admin menu when clicking outside
+            document.addEventListener('click', (e) => {
+                const adminMenu = document.getElementById('adminMenu');
+                const accountBtn = document.getElementById('accountBtn');
+                if (!adminMenu.contains(e.target) && !accountBtn.contains(e.target)) {
+                    hideAdminMenu();
+                }
+            });
+
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
+                const errorElement = document.getElementById('loginError');
+                
+                if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    isAdminLoggedIn = true;
+                    hideLoginModal();
+                    showAdminMenu();
+                    renderProducts(); // Re-render to show admin controls
+                    showToast('Login berhasil!');
+                } else {
+                    errorElement.textContent = 'Username atau password salah!';
+                    errorElement.classList.remove('hidden');
+                }
+            });
+
+            // Login cancel
+            document.getElementById('loginCancel').addEventListener('click', hideLoginModal);
+
+            // Product form
+            document.getElementById('productForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const title = document.getElementById('productTitle').value.trim();
+                const description = document.getElementById('productDescription').value.trim();
+                const price = parseInt(document.getElementById('productPrice').value);
+                const image = document.getElementById('productImage').value.trim();
+                const category = document.getElementById('productCategory').value;
+                const editId = e.target.getAttribute('data-edit-id');
+
+                if (!title || !description || !price || !image || !category) {
+                    showToast('Semua field harus diisi!', 'error');
+                    return;
+                }
+
+                try {
+                    const productData = {
+                        title,
+                        description,
+                        price,
+                        image,
+                        category,
+                        updatedAt: new Date()
+                    };
+
+                    if (editId) {
+                        // Update existing product
+                        await updateDoc(doc(db, 'products', editId), productData);
+                        showToast('Produk berhasil diperbarui!');
+                    } else {
+                        // Add new product
+                        productData.createdAt = new Date();
+                        await addDoc(collection(db, 'products'), productData);
+                        showToast('Produk berhasil ditambahkan!');
+                    }
+
+                    document.getElementById('productModal').classList.add('hidden');
+                    await loadProducts();
+                } catch (error) {
+                    console.error('Error saving product:', error);
+                    showToast('Gagal menyimpan produk', 'error');
+                }
+            });
+
+            // Product modal cancel
+            document.getElementById('cancelProductBtn').addEventListener('click', () => {
+                document.getElementById('productModal').classList.add('hidden');
+            });
+
+            // Close modals when clicking outside
+            document.getElementById('loginModal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) hideLoginModal();
+            });
+
+            document.getElementById('productModal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    document.getElementById('productModal').classList.add('hidden');
+                }
             });
         });
 
-        // Add CSS for ripple effect
-        const style = document.createElement('style');
-        style.textContent = `
-            .ripple {
-                position: absolute;
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.4);
-                transform: scale(0);
-                animation: ripple-animation 0.6s linear;
-                pointer-events: none;
-                z-index: 1;
-            }
-            
-            @keyframes ripple-animation {
-                to {
-                    transform: scale(4);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
+        // Make functions global
+        window.showAddProductModal = showAddProductModal;
+        window.editProduct = editProduct;
+        window.deleteProduct = deleteProduct;
+        window.logoutAdmin = logoutAdmin;
+        window.addToCart = addToCart;
+        window.increaseQuantity = increaseQuantity;
+        window.decreaseQuantity = decreaseQuantity;
+        window.toggleWishlist = toggleWishlist;
     </script>
 </body>
-
 </html>

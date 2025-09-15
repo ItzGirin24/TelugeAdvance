@@ -3,69 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="logo Teluge.jpg" type="image/x-icon">
     <title>TelugeAgro - Keranjang Belanja</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/ItzGirin24/TelugeAgro/refs/heads/main/logo%20Teluge.jpg" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script src="https://app.midtrans.com/snap/snap.js" data-client-key="Mid-client-ZbcAdH6rPFR6ez8i"></script>
-
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyB2sLqWwZIxr65c3CcNgKCCjmDTeDlSnfY",
-            authDomain: "telugeagro2025.firebaseapp.com",
-            projectId: "telugeagro2025",
-            storageBucket: "telugeagro2025.firebasestorage.app",
-            messagingSenderId: "1029963109637",
-            appId: "1:1029963109637:web:86824d0db45e1489b3136c",
-            measurementId: "G-XF1JDPME66"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        window.saveOrderToFirebase = async function(orderData) {
-            try {
-                const docRef = await addDoc(collection(db, 'orders'), orderData);
-                console.log('Order saved with ID:', docRef.id);
-                return docRef.id;
-            } catch (error) {
-                console.error('Error saving order:', error);
-                throw error;
-            }
-        };
-
-        window.loadOrdersFromFirebase = async function() {
-            try {
-                const ordersRef = collection(db, 'orders');
-                const querySnapshot = await getDocs(ordersRef);
-                const orders = [];
-                querySnapshot.forEach((doc) => {
-                    orders.push({ id: doc.id, ...doc.data() });
-                });
-                return orders;
-            } catch (error) {
-                console.error('Error loading orders:', error);
-                return [];
-            }
-        };
-
-        window.getPendingOrdersCount = async function() {
-            try {
-                const orders = await window.loadOrdersFromFirebase();
-                const pendingOrders = orders.filter(order => order.status === 'pending');
-                return pendingOrders.length;
-            } catch (error) {
-                console.error('Error getting pending orders count:', error);
-                return 0;
-            }
-        };
-    </script>
-
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
         
@@ -77,8 +20,7 @@
         
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* Custom Scrollbar */
@@ -99,20 +41,13 @@
             background: #16a34a;
         }
 
-        /* Glass Effect */
-        .glass {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
         /* Loading Animation */
         .loading-spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #22c55e;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
         }
         
@@ -121,40 +56,61 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e5e7eb;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: progress-shine 2s infinite;
+        }
+        
+        @keyframes progress-shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
         /* Cart Item Animations */
         .cart-item {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-origin: center;
+            transition: all 0.3s ease;
         }
         
         .cart-item:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.1);
         }
         
         .cart-item.removing {
-            animation: slideOut 0.5s ease-in-out forwards;
-        }
-        
-        @keyframes slideOut {
-            0% {
-                transform: translateX(0) scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(-100%) scale(0.8);
-                opacity: 0;
-            }
+            transform: translateX(-100%);
+            opacity: 0;
         }
 
-        /* Quantity Controls */
+        /* Quantity Control */
         .quantity-control {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            overflow: hidden;
             display: flex;
             align-items: center;
+            background: #f8fafc;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
             transition: all 0.3s ease;
         }
         
@@ -167,57 +123,51 @@
             background: #22c55e;
             color: white;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
         }
         
         .quantity-btn:hover {
             background: #16a34a;
-            transform: scale(1.1);
-        }
-        
-        .quantity-btn:active {
-            transform: scale(0.95);
+            transform: scale(1.05);
         }
         
         .quantity-input {
             border: none;
             background: transparent;
             text-align: center;
-            width: 60px;
-            height: 40px;
+            width: 50px;
+            height: 36px;
             font-weight: bold;
-            font-size: 16px;
-            outline: none;
+            font-size: 14px;
         }
 
-        /* Empty Cart Animation */
-        .empty-cart {
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+        /* Total Summary */
+        .total-summary {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(34, 197, 94, 0.3);
         }
 
-        /* Checkout Button Animation */
+        /* Checkout Button */
         .checkout-btn {
             position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
-        .checkout-btn:hover {
+        .checkout-btn:hover:not(:disabled) {
             transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(34, 197, 94, 0.4);
+            box-shadow: 0 15px 35px rgba(251, 191, 36, 0.4);
         }
         
         .checkout-btn::before {
@@ -235,88 +185,13 @@
             left: 100%;
         }
 
-        /* Total Summary Animation */
-        .total-summary {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            color: white;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .total-summary:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.4);
-        }
-
-        /* Modal Animations */
-        .modal {
-            backdrop-filter: blur(10px);
-            animation: modalFadeIn 0.3s ease-out;
-        }
-        
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        
-        .modal-content {
-            animation: modalSlideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        
-        @keyframes modalSlideUp {
-            from {
-                transform: translateY(100px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        /* Payment Success Animation */
-        .payment-success {
-            animation: successPulse 0.8s ease-in-out;
-        }
-        
-        @keyframes successPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        /* Mobile Optimizations */
-        @media (max-width: 768px) {
-            .cart-item {
-                padding: 16px;
-                margin-bottom: 12px;
-            }
-            
-            .quantity-control {
-                scale: 0.9;
-            }
-            
-            .total-summary {
-                padding: 20px;
-                margin: 16px;
-            }
-        }
-
-        /* Form Styling */
+        /* Form Inputs */
         .form-input {
             width: 100%;
-            padding: 16px;
+            padding: 12px 16px;
             border: 2px solid #e2e8f0;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 14px;
             transition: all 0.3s ease;
             background: white;
         }
@@ -325,7 +200,77 @@
             border-color: #22c55e;
             box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
             outline: none;
-            transform: translateY(-2px);
+        }
+
+        /* Empty Cart Animation */
+        .empty-cart {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Payment Success Animation */
+        .payment-success {
+            animation: successPulse 0.6s ease-out;
+        }
+        
+        @keyframes successPulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #22c55e;
+            animation: confetti-fall linear;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        /* WhatsApp Float Button */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 100px;
+            right: 20px;
+            background-color: #25d366;
+            color: white;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            animation: bounce 2s infinite;
+            text-decoration: none;
+        }
+        
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 2px 2px 15px rgba(37, 211, 102, 0.4);
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
 
         /* Toast Animation */
@@ -352,106 +297,31 @@
             box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
         }
 
-        /* Progress Bar */
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 20px 0;
+        /* Modal Styles */
+        .modal {
+            backdrop-filter: blur(10px);
+            animation: modalFadeIn 0.3s ease-out;
         }
         
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #22c55e, #16a34a);
-            border-radius: 10px;
-            transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            position: relative;
-        }
-        
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background-image: linear-gradient(
-                -45deg,
-                rgba(255, 255, 255, .2) 25%,
-                transparent 25%,
-                transparent 50%,
-                rgba(255, 255, 255, .2) 50%,
-                rgba(255, 255, 255, .2) 75%,
-                transparent 75%,
-                transparent
-            );
-            background-size: 50px 50px;
-            animation: move 2s linear infinite;
-        }
-        
-        @keyframes move {
-            0% { background-position: 0 0; }
-            100% { background-position: 50px 50px; }
-        }
-
-        /* Confetti Animation */
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: #22c55e;
-            animation: confetti-fall 3s linear infinite;
-            z-index: 1000;
-            pointer-events: none;
-        }
-        
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-100vh) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(720deg);
+        @keyframes modalFadeIn {
+            from {
                 opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
             }
         }
 
-        /* WhatsApp Float Button */
-        .whatsapp-float {
-            position: fixed;
-            width: 60px;
-            height: 60px;
-            bottom: 20px;
-            right: 20px;
-            background-color: #25d366;
-            color: white;
-            border-radius: 50px;
-            text-align: center;
-            font-size: 30px;
-            box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            animation: bounce 2s infinite;
-        }
-        
-        .whatsapp-float:hover {
-            transform: scale(1.1);
-            box-shadow: 2px 2px 15px rgba(37, 211, 102, 0.4);
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .whatsapp-float { bottom: 140px; right: 16px; }
+            .toast { top: 16px; right: 16px; left: 16px; width: auto; }
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-50">
     <!-- Loading Screen -->
     <div id="loading-screen" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
         <div class="text-center">
@@ -574,23 +444,8 @@
                     <!-- Recommendations -->
                     <div class="bg-white rounded-2xl shadow-lg p-6" data-aos="fade-right" data-aos-delay="200">
                         <h3 class="text-xl font-bold text-gray-800 mb-4">Rekomendasi Produk</h3>
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-xl hover:border-green-300 transition-colors duration-300">
-                                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/6687a905-5ec4-43e4-9738-c2cc0c9db9b7.png" alt="Pisang Cavendish" class="w-16 h-16 object-cover rounded-lg">
-                                <div class="flex-1">
-                                    <h4 class="font-semibold text-gray-800">Pisang Cavendish</h4>
-                                    <p class="text-sm text-gray-600">Rp 12.000/kg</p>
-                                    <button class="text-green-600 text-sm font-medium hover:text-green-700 transition-colors duration-300" onclick="addRecommendation('Pisang Cavendish', 12000)">+ Tambah</button>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-xl hover:border-green-300 transition-colors duration-300">
-                                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ae569231-d922-40c1-b7b2-db4e98abb5e1.png" alt="Pisang Organik" class="w-16 h-16 object-cover rounded-lg">
-                                <div class="flex-1">
-                                    <h4 class="font-semibold text-gray-800">Pisang Organik</h4>
-                                    <p class="text-sm text-gray-600">Rp 18.000/kg</p>
-                                    <button class="text-green-600 text-sm font-medium hover:text-green-700 transition-colors duration-300" onclick="addRecommendation('Pisang Organik', 18000)">+ Tambah</button>
-                                </div>
-                            </div>
+                        <div id="recommendations-container" class="grid md:grid-cols-2 gap-4">
+                            <!-- Recommendations will be loaded here -->
                         </div>
                     </div>
                 </div>
@@ -654,7 +509,7 @@
                                 </button>
                             </div>
                             <div class="mt-3 text-sm text-gray-500">
-                                🎉 Gunakan kode <strong>COMING SOON</strong> untuk diskon %
+                                🎉 Gunakan kode <strong>COMINGSOON</strong> untuk diskon 10%
                             </div>
                         </div>
                     </div>
@@ -759,23 +614,104 @@
         <span id="toast-message"></span>
     </div>
 
-    <!-- Scripts -->
-    <script>
+    <!-- Firebase and Scripts -->
+    <script type="module">
+        // Firebase SDK imports
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+        import {
+            getFirestore,
+            collection,
+            getDocs,
+            query,
+            orderBy,
+            addDoc
+        } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB2sLqWwZIxr65c3CcNgKCCjmDTeDlSnfY",
+            authDomain: "telugeagro2025.firebaseapp.com",
+            projectId: "telugeagro2025",
+            storageBucket: "telugeagro2025.firebasestorage.app",
+            messagingSenderId: "1029963109637",
+            appId: "1:1029963109637:web:86824d0db45e1489b3136c",
+            measurementId: "G-XF1JDPME66"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Global Variables
+        let cartItems = {};
+        let allProducts = [];
+        let appliedPromo = null;
+
+        // Save order to Firebase
+        async function saveOrderToFirebase(orderData) {
+            try {
+                const docRef = await addDoc(collection(db, 'orders'), orderData);
+                return docRef.id;
+            } catch (error) {
+                console.error('Error saving order:', error);
+                throw error;
+            }
+        }
+
+        // Load products for recommendations
+        async function loadProducts() {
+            try {
+                const productsQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+                const querySnapshot = await getDocs(productsQuery);
+                
+                allProducts = [];
+                querySnapshot.forEach((doc) => {
+                    const productData = doc.data();
+                    allProducts.push({
+                        id: doc.id,
+                        ...productData
+                    });
+                });
+
+                loadRecommendations();
+            } catch (error) {
+                console.error('Error loading products:', error);
+            }
+        }
+
+        // Load recommendations
+        function loadRecommendations() {
+            const container = document.getElementById('recommendations-container');
+            if (allProducts.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center col-span-2">Tidak ada rekomendasi produk</p>';
+                return;
+            }
+
+            // Get 4 random products for recommendations
+            const shuffled = [...allProducts].sort(() => 0.5 - Math.random());
+            const recommendations = shuffled.slice(0, 4);
+
+            container.innerHTML = recommendations.map(product => `
+                <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-xl hover:border-green-300 transition-colors duration-300">
+                    <img src="${product.image}" alt="${product.title}" class="w-16 h-16 object-cover rounded-lg" onerror="this.src='https://via.placeholder.com/64x64?text=No+Image'">
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-gray-800">${product.title}</h4>
+                        <p class="text-sm text-gray-600">Rp ${formatPrice(product.price)}/kg</p>
+                        <button class="text-green-600 text-sm font-medium hover:text-green-700 transition-colors duration-300" onclick="addRecommendation('${product.title}', ${product.price})">+ Tambah</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Utility function to format price
+        function formatPrice(price) {
+            return new Intl.NumberFormat('id-ID').format(Math.round(price));
+        }
+
         // Initialize AOS
         AOS.init({
             duration: 800,
             once: true,
             offset: 100
         });
-
-        // Global Variables
-        let cartItems = {};
-        let appliedPromo = null;
-
-        // Utility function to format price
-        function formatPrice(price) {
-            return new Intl.NumberFormat('id-ID').format(Math.round(price));
-        }
 
         // Loading Screen
         window.addEventListener('load', function() {
@@ -784,6 +720,7 @@
                 setTimeout(function() {
                     document.getElementById('loading-screen').style.display = 'none';
                     loadCart();
+                    loadProducts();
                 }, 300);
             }, 1000);
         });
@@ -1030,10 +967,9 @@
                 address: address,
                 notes: notes,
                 items: items.map(item => ({
-                    id: item.product,
+                    product: item.product,
                     price: item.price,
-                    quantity: item.quantity,
-                    name: item.product
+                    quantity: item.quantity
                 })),
                 subtotal: subtotal,
                 discount: discount,
@@ -1045,7 +981,7 @@
 
             try {
                 // Save order to Firebase
-                const orderId = await window.saveOrderToFirebase(orderData);
+                const orderId = await saveOrderToFirebase(orderData);
                 console.log('Order saved successfully:', orderId);
 
                 // Close checkout modal
@@ -1148,6 +1084,16 @@
                 toast.classList.remove('show');
             }, 3000);
         }
+
+        // Make functions global
+        window.saveOrderToFirebase = saveOrderToFirebase;
+        window.applyPromo = applyPromo;
+        window.addRecommendation = addRecommendation;
+        window.increaseQuantity = increaseQuantity;
+        window.decreaseQuantity = decreaseQuantity;
+        window.updateQuantity = updateQuantity;
+        window.removeFromCart = removeFromCart;
+        window.contactWhatsApp = contactWhatsApp;
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
