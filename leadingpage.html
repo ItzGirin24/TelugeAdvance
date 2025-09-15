@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://raw.githubusercontent.com/ItzGirin24/TelugeAgro/refs/heads/main/logo%20Teluge.jpg" type="image/x-icon">
+    <link rel="icon" href="logo Teluge.jpg" type="image/x-icon">
     <title>Teluge Agro - Pemasok Pisang Terbaik Indonesia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
@@ -164,14 +164,12 @@
             background-size: cover;
         }
 
-        /* Statistics Counter Animation */
+        /* Statistics Counter Animation - Updated to white */
         .stat-number {
             font-size: 3rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         /* Testimonial Card Hover */
@@ -180,10 +178,12 @@
         }
         
         .testimonial-card:hover {
-            transform: translateY(-10px) rotate(1deg);
+            transform: translateY(-10px) rotatse(1deg);
         }
 
         /* Hero Text Animation */
+        .hero-text {
+            background: linear-gradient(135deg, #ffffff, #f0fdf4);
         .hero-text {
             background: linear-gradient(135deg, #ffffff, #f0fdf4);
             -webkit-background-clip: text;
@@ -346,15 +346,15 @@
                     <div class="grid grid-cols-3 gap-6 mt-12" data-aos="fade-up" data-aos-delay="300">
                         <div class="text-center">
                             <div class="stat-number" data-target="500">0</div>
-                            <p class="text-green-100 font-medium">Ton/Bulan</p>
+                            <p class="text-white font-medium">Ton/Bulan</p>
                         </div>
                         <div class="text-center">
                             <div class="stat-number" data-target="15">0</div>
-                            <p class="text-green-100 font-medium">Negara Ekspor</p>
+                            <p class="text-white font-medium">Negara Ekspor</p>
                         </div>
                         <div class="text-center">
                             <div class="stat-number" data-target="25">0</div>
-                            <p class="text-green-100 font-medium">Tahun Pengalaman</p>
+                            <p class="text-white font-medium">Tahun Pengalaman</p>
                         </div>
                     </div>
                 </div>
@@ -922,5 +922,4 @@
         document.head.appendChild(style);
     </script>
 </body>
-
 </html>
