@@ -245,7 +245,7 @@
             position: fixed;
             width: 60px;
             height: 60px;
-            bottom: 200px;
+            bottom: 210px;
             right: 20px;
             background-color: #22c55e;
             color: white;
@@ -455,7 +455,7 @@
             </div>
 
             <!-- Cart Content -->
-            <div class="grid lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Cart Items -->
                 <div class="lg:col-span-2">
                     <div class="bg-white rounded-2xl shadow-lg p-6 mb-6" data-aos="fade-right">
@@ -838,7 +838,7 @@
                 <div class="cart-item bg-gray-50 rounded-xl p-6 mb-4 border border-gray-200" data-product="${item.product}" data-aos="fade-up" data-aos-delay="${index * 100}">
                     <div class="flex items-center space-x-4">
                         <!-- Product Image -->
-                        <img src="${productImage}" alt="${item.product}" class="w-20 h-20 object-cover rounded-xl flex-shrink-0" onerror="this.src='https://via.placeholder.com/80x80?text=No+Image'">
+                        <img src="${productImage}" alt="${item.product}" class="w-20 h-20 max-w-full h-auto object-cover rounded-xl flex-shrink-0" onerror="this.src='https://via.placeholder.com/80x80?text=No+Image'">
 
                         <!-- Product Info -->
                         <div class="flex-1 min-w-0">
@@ -1191,11 +1191,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
