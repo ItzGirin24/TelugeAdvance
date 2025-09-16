@@ -265,7 +265,7 @@
         /* Floating Cart */
         .floating-cart {
             position: fixed;
-            bottom: 20px;
+            bottom: 10px; /* Increased bottom spacing to avoid overlap */
             right: 20px;
             z-index: 1000;
             transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -344,7 +344,7 @@
             position: fixed;
             width: 60px;
             height: 60px;
-            bottom: 140px;
+            bottom: 180px; /* Increased bottom spacing to avoid overlap */
             right: 20px;
             background-color: #22c55e;
             color: white;
@@ -403,6 +403,7 @@
             justify-content: center;
             transition: all 0.3s ease;
             animation: bounce 2s infinite;
+            margin-bottom: 10px; /* Added margin to separate from cart float */
         }
 
         .whatsapp-float:hover {
