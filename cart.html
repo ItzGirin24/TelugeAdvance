@@ -836,7 +836,7 @@
 
                 return `
                 <div class="cart-item bg-gray-50 rounded-xl p-6 mb-4 border border-gray-200" data-product="${item.product}" data-aos="fade-up" data-aos-delay="${index * 100}">
-                    <div class="flex items-center space-x-4">
+                    <div class="flex flex-col sm:flex-row items-center sm:space-x-4 space-y-4 sm:space-y-0">
                         <!-- Product Image -->
                         <img src="${productImage}" alt="${item.product}" class="w-20 h-20 max-w-full h-auto object-cover rounded-xl flex-shrink-0" onerror="this.src='https://via.placeholder.com/80x80?text=No+Image'">
 
@@ -850,9 +850,9 @@
                         <!-- Quantity Controls -->
                         <div class="flex items-center space-x-4">
                             <div class="quantity-control">
-                                <button class="quantity-btn" onclick="decreaseQuantity('${item.product}')">−</button>
-                                <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="1000" onchange="updateQuantity('${item.product}', this.value)">
-                                <button class="quantity-btn" onclick="increaseQuantity('${item.product}')">+</button>
+                                <button class="quantity-btn w-8 h-8 sm:w-9 sm:h-9" onclick="decreaseQuantity('${item.product}')">−</button>
+                                <input type="number" class="quantity-input w-12 sm:w-14" value="${item.quantity}" min="1" max="1000" onchange="updateQuantity('${item.product}', this.value)">
+                                <button class="quantity-btn w-8 h-8 sm:w-9 sm:h-9" onclick="increaseQuantity('${item.product}')">+</button>
                             </div>
 
                             <button onclick="removeFromCart('${item.product}')" class="text-red-500 hover:text-red-700 transition-colors duration-300 p-2 hover:bg-red-50 rounded-lg" title="Hapus dari keranjang">
