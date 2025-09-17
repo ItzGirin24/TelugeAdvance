@@ -9,9 +9,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/emailjs.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/emailjs.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
         
@@ -21,6 +21,10 @@
             box-sizing: border-box;
         }
         
+        body, html {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
         body {
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
@@ -135,15 +139,16 @@
             left: 100%;
         }
 
-        /* Mobile Menu Animation */
-        .mobile-menu {
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
-        }
-        
-        .mobile-menu.active {
-            transform: translateX(0);
-        }
+/* Mobile Menu Animation */
+.mobile-menu {
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 9999; /* Ensure mobile menu is below WhatsApp float */
+}
+
+.mobile-menu.active {
+    transform: translateX(0);
+}
 
         /* Loading Animation */
         .loading-spinner {
@@ -182,7 +187,7 @@
         }
         
         .testimonial-card:hover {
-            transform: translateY(-10px) rotatse(1deg);
+            transform: translateY(-10px) rotate(1deg);
         }
 
         /* Hero Text Animation */
@@ -197,45 +202,83 @@
         @media (max-width: 640px) {
             .stat-number { font-size: 2rem; }
             .hero-text { font-size: 2.5rem; }
+            /* Fix hero statistics grid to 1 column on mobile */
+            #home .grid.lg\:grid-cols-2 {
+                grid-template-columns: 1fr !important;
+            }
+            /* Add padding to container on mobile */
+            .container {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            /* Adjust footer grid for small screens */
+            footer .grid.md\:grid-cols-4 {
+                grid-template-columns: 1fr 1fr !important;
+            }
+            /* Adjust contact form padding */
+            #contact-form {
+                padding: 1rem !important;
+            }
+            /* Ensure hero image scales properly */
+            #home img.floating {
+                max-width: 100% !important;
+                height: auto !important;
+            }
         }
         
         @media (max-width: 480px) {
             .stat-number { font-size: 1.5rem; }
             .hero-text { font-size: 2rem; }
+            /* Footer grid to single column on very small screens */
+            footer .grid.md\:grid-cols-4 {
+                grid-template-columns: 1fr !important;
+            }
+            /* Reduce footer padding */
+            footer .container {
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+            }
+            /* Adjust mobile menu z-index to ensure visibility */
+            .mobile-menu {
+                z-index: 9999 !important;
+            }
+            /* Fix mobile menu button z-index */
+            #mobile-menu-btn {
+                z-index: 10000 !important;
+            }
         }
 
-        /* WhatsApp Float But
-         */
-        .whatsapp-float {
-            position: fixed;
-            width: 60px;
-            height: 60px;
-            bottom: 20px;
-            right: 20px;
-            background-color: #25d366;
-            color: white;
-            border-radius: 50px;
-            text-align: center;
-            font-size: 30px;
-            box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            animation: bounce 2s infinite;
-        }
-        
-        .whatsapp-float:hover {
-            transform: scale(1.1);
-            box-shadow: 2px 2px 15px rgba(37, 211, 102, 0.4);
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
-        }
+/* WhatsApp Float Button */
+.whatsapp-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 20px;
+    right: 1rem;
+    background-color: #25d366;
+    color: white;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+    z-index: 10000; /* Increased z-index to be above mobile menu */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    animation: bounce 2s infinite;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    box-shadow: 2px 2px 15px rgba(37, 211, 102, 0.4);
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
 
         /* Product Card Glow Effect */
         .product-glow {
@@ -293,8 +336,8 @@
                 </div>
 
                 <!-- Mobile Menu Button -->
-                <button id="mobile-menu-btn" class="md:hidden text-white hover:text-green-200 transition-colors duration-300">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button id="mobile-menu-btn" aria-controls="mobile-menu" aria-expanded="false" class="md:hidden text-white hover:text-green-200 transition-colors duration-300 cursor-pointer z-50">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
@@ -302,7 +345,7 @@
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="mobile-menu md:hidden absolute top-full left-0 right-0 bg-green-700 border-t border-green-600">
+        <div id="mobile-menu" class="mobile-menu md:hidden absolute top-full left-0 right-0 bg-green-700 border-t border-green-600 z-40">
             <div class="px-4 pt-2 pb-4 space-y-2">
                 <a href="#home" class="block px-3 py-2 text-white hover:bg-green-600 rounded transition-colors duration-300">Beranda</a>
                 <a href="#about" class="block px-3 py-2 text-white hover:bg-green-600 rounded transition-colors duration-300">Tentang</a>
@@ -316,7 +359,7 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="relative min-h-screen flex items-center gradient-bg overflow-hidden">
+<section id="home" class="relative min-h-screen flex items-center gradient-bg overflow-hidden pt-20">
         <!-- Background Pattern -->
         <div class="absolute inset-0 opacity-10">
             <div class="absolute transform rotate-12 -top-20 -right-20 w-96 h-96 rounded-full border-4 border-white"></div>
@@ -348,11 +391,11 @@
                     <!-- Statistics -->
                     <div class="grid grid-cols-3 gap-6 mt-12" data-aos="fade-up" data-aos-delay="300">
                         <div class="text-center">
-                            <div class="stat-number" data-target="20">0</div>
+                            <div class="stat-number" data-target="10">0</div>
                             <p class="text-white font-medium">Ton/Bulan</p>
                         </div>
                         <div class="text-center">
-                            <div class="stat-number" data-target="10">0</div>
+                            <div class="stat-number" data-target="15">0</div>
                             <p class="text-white font-medium">Pengiriman Ke - Provinsi</p>
                         </div>
                         <div class="text-center">
@@ -444,7 +487,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945"></path>
                                 </svg>
                             </div>
-                            <span class="text-lg font-semibold text-gray-700">Pengiriman ke 10+ Provinsi di Indonesia</span>
+                            <span class="text-lg font-semibold text-gray-700">Pengiriman ke 15+ Provinsi di Indonesia</span>
                         </div>
                     </div>
                 </div>
@@ -591,20 +634,16 @@
 
                 <!-- Contact Form -->
                 <div data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
-                    <form id="contact-form" class="glass p-8 rounded-3xl">
+<form id="contact-form" class="glass p-8 rounded-3xl">
                         <h3 class="text-2xl font-bold mb-6">Kirim Pesan</h3>
                         <div class="space-y-6">
                             <div>
-                                <label for="name" class="block text-sm font-semibold mb-2">Nama Lengkap</label>
-                                <input type="text" id="name" name="name" required class="w-full bg-white bg-opacity-10 border border-white border-opacity-30 rounded-xl px-4 py-3 text-white placeholder-green-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-300">
+                                <label for="from_name" class="block text-sm font-semibold mb-2">Nama Lengkap</label>
+                                <input type="text" id="from_name" name="from_name" required class="w-full bg-white bg-opacity-10 border border-white border-opacity-30 rounded-xl px-4 py-3 text-white placeholder-green-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-300">
                             </div>
                             <div>
-                                <label for="email" class="block text-sm font-semibold mb-2">Email</label>
-                                <input type="email" id="email" name="email" required class="w-full bg-white bg-opacity-10 border border-white border-opacity-30 rounded-xl px-4 py-3 text-white placeholder-green-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-300">
-                            </div>
-                            <div>
-                                <label for="phone" class="block text-sm font-semibold mb-2">Nomor WhatsApp</label>
-                                <input type="tel" id="phone" name="phone" class="w-full bg-white bg-opacity-10 border border-white border-opacity-30 rounded-xl px-4 py-3 text-white placeholder-green-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-300">
+                                <label for="reply_to" class="block text-sm font-semibold mb-2">Email</label>
+                                <input type="email" id="reply_to" name="reply_to" required class="w-full bg-white bg-opacity-10 border border-white border-opacity-30 rounded-xl px-4 py-3 text-white placeholder-green-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-300">
                             </div>
                             <div>
                                 <label for="message" class="block text-sm font-semibold mb-2">Pesan</label>
@@ -789,7 +828,7 @@
 
         // Initialize EmailJS
         if (typeof emailjs !== 'undefined') {
-            emailjs.init('sFdQfCubtceDeQ0i3');
+            emailjs.init("sFdQfCubtceDeQ0i3");
         }
 
         // Loading Screen
@@ -816,31 +855,31 @@
             }
         }, 3000);
 
-        // Navbar Scroll Effect
-        window.addEventListener('scroll', function() {
+        // Navbar Glass Effect - Always applied
+        document.addEventListener('DOMContentLoaded', function() {
             const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('glass');
-                navbar.style.backdropFilter = 'blur(10px)';
-            } else {
-                navbar.classList.remove('glass');
-                navbar.style.backdropFilter = 'none';
-            }
+            navbar.classList.add('glass');
+            navbar.style.backdropFilter = 'blur(10px)';
         });
 
         // Mobile Menu Toggle
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
 
-        mobileMenuBtn.addEventListener('click', function() {
-            mobileMenu.classList.toggle('active');
-        });
+        // Fix toggle bug by ensuring event listener is added after DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('active');
+                const isExpanded = mobileMenu.classList.contains('active');
+                mobileMenuBtn.setAttribute('aria-expanded', isExpanded);
+            });
 
-        // Close mobile menu when clicking a link
-        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                mobileMenu.classList.remove('active');
+            // Close mobile menu when clicking a link
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active');
+                });
             });
         });
 
@@ -925,7 +964,7 @@
         // Contact Form Handling
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof emailjs !== 'undefined') {
-                emailjs.init('sFdQfCubtceDeQ0i3');
+                emailjs.init("sFdQfCubtceDeQ0i3");
             }
             const contactForm = document.getElementById('contact-form');
             if (contactForm) {
@@ -938,42 +977,14 @@
                     submitBtn.textContent = 'Mengirim...';
                     submitBtn.disabled = true;
 
-                    const formData = new FormData(this);
-                    const name = formData.get('name');
-                    const email = formData.get('email');
-                    const phone = formData.get('phone');
-                    const message = formData.get('message');
-
-                    // Prepare template parameters for EmailJS
-                    const templateParams = {
-                        from_name: name,
-                        from_email: email,
-                        phone: phone,
-                        message: message,
-                        to_email: 'teluge.agro@gmail.com'
-                    };
-
-                    // Send email using EmailJS
-                    emailjs.send('service_telugeagro', 'template_contact', templateParams)
-                        .then(function(response) {
-                            console.log('Email sent successfully:', response);
-                            showNotification('Pesan berhasil dikirim! Kami akan segera menghubungi Anda.', 'success');
-
-                            // Reset form
-                            document.getElementById('contact-form').reset();
-
-                            // Optional: Send to WhatsApp after successful email
-                            const whatsappMessage = `Halo TelugeAgro!%0A%0ASaya telah mengirim pesan melalui website:%0A%0ANama: ${name}%0AEmail: ${email}%0APhone: ${phone}%0A%0APesan: ${message}`;
-                            setTimeout(() => {
-                                window.open(`https://wa.me/628112638318?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-                            }, 2000);
+                    emailjs.sendForm('service_5hwajod', 'template_kg9psli', this)
+                        .then(() => {
+                            alert('Terkirim!');
+                            contactForm.reset();
+                        }, (err) => {
+                            alert('Error: ' + JSON.stringify(err));
                         })
-                        .catch(function(error) {
-                            console.error('Email sending failed:', error);
-                            showNotification('Gagal mengirim pesan. Silakan coba lagi atau hubungi kami langsung.', 'error');
-                        })
-                        .finally(function() {
-                            // Reset button state
+                        .finally(() => {
                             submitBtn.textContent = originalText;
                             submitBtn.disabled = false;
                         });
@@ -1086,5 +1097,3 @@
     </script>
 </body>
 </html>
-
-
