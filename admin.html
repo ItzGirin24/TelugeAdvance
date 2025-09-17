@@ -44,6 +44,37 @@
                     <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
                 </a>
             </nav>
+            <script>
+                // Synchronize cart count from localStorage
+                function updateCartCount() {
+                    const cartCountElement = document.getElementById('cart-count');
+                    if (!cartCountElement) return;
+                    const cartData = localStorage.getItem('cart');
+                    let count = 0;
+                    if (cartData) {
+                        try {
+                            const cart = JSON.parse(cartData);
+                            count = Object.values(cart).reduce((acc, item) => acc + item.quantity, 0);
+                        } catch (e) {
+                            console.error('Error parsing cart data:', e);
+                        }
+                    }
+                    cartCountElement.textContent = count;
+                    if (count === 0) {
+                        cartCountElement.style.display = 'none';
+                    } else {
+                        cartCountElement.style.display = 'flex';
+                    }
+                }
+                // Update cart count on page load
+                document.addEventListener('DOMContentLoaded', updateCartCount);
+                // Optionally, listen for storage events to update count if cart changes in other tabs
+                window.addEventListener('storage', (event) => {
+                    if (event.key === 'cart') {
+                        updateCartCount();
+                    }
+                });
+            </script>
             <!-- Mobile menu -->
             <nav id="mobile-menu" class="hidden bg-green-600 text-white px-4 py-2 md:hidden flex flex-col space-y-2 absolute top-full right-4 rounded shadow-lg z-20 w-40">
                  <a href="leadingpage.html" class="hover:text-green-300">About</a>
@@ -504,12 +535,8 @@
 
         // Account button event listener
         document.getElementById('accountBtn').addEventListener('click', () => {
-            if (isLoggedIn()) {
-                toggleAdminMenu();
-            } else {
-                // Redirect to login or show login modal
-                window.location.href = 'login.html'; // Assuming you have a login page
-            }
+            // Show admin menu popup directly regardless of login state
+            toggleAdminMenu();
         });
 
         // Close admin menu when clicking outside
@@ -935,12 +962,8 @@
     });
 
     // Initialize the app
-    loadCart();
-
-    // Popup click event
-    document.getElementById('cart-popup').addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    // Note: loadCart() removed as it's not defined in this file
+    // Popup click event removed as cart-popup element may not exist in admin.html
 
     // Global updateOrderStatus function - will be replaced by module version when loaded
     window.updateOrderStatus = async function(orderId, newStatus) {
