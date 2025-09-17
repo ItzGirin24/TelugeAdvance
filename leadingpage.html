@@ -744,7 +744,7 @@
         async function loadProducts() {
             try {
                 const productsRef = db.collection('products');
-                const snapshot = await productsRef.get();
+                const snapshot = await productsRef.where('featured', '==', true).get();
 
                 const productsGrid = document.getElementById('products-grid');
                 const loadingState = document.getElementById('products-loading');
