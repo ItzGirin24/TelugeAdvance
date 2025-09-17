@@ -748,9 +748,16 @@
                 return;
             }
 
-            // Get 4 random products for recommendations
-            const shuffled = [...allProducts].sort(() => 0.5 - Math.random());
-            const recommendations = shuffled.slice(0, 4);
+            // Only show featured products
+            const featuredProducts = allProducts.filter(product => product.featured === true);
+
+            if (featuredProducts.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center col-span-2">Tidak ada produk unggulan untuk direkomendasikan</p>';
+                return;
+            }
+
+            // Take up to 4 featured products
+            const recommendations = featuredProducts.slice(0, 4);
 
             container.innerHTML = recommendations.map(product => `
                 <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-xl hover:border-green-300 transition-colors duration-300">
