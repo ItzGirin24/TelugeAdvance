@@ -1,0 +1,67 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "admin.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "cart.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "leadingpage.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "store.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "logo Teluge.jpg",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "logo Teluge.png",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/admin",
+      "dest": "/admin.html"
+    },
+    {
+      "src": "/keranjang",
+      "dest": "/cart.html"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/profil",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/tentang",
+      "dest": "/leadingpage.html"
+    },
+    {
+      "src": "/toko",
+      "dest": "/store.html"
+    },
+    {
+      "src": "/logo Teluge.jpg",
+      "dest": "/logo Teluge.jpg"
+    },
+    {
+      "src": "/logo Teluge.png",
+      "dest": "/logo Teluge.png"
+    }
+  ]
+}
