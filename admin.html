@@ -692,7 +692,7 @@
             if (confirm('Are you sure you want to delete this product?')) {
                 try {
                     await deleteDoc(doc(db, 'products', productId));
-                    loadProducts();
+                    loadProducts()
                 } catch (error) {
                     console.error('Error deleting product:', error);
                 }
