@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lacak Pesanan - Teluge Agro</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/ItzGirin24/TelugeAgro/refs/heads/main/logo%20Teluge.jpg" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+</head>
+<body class="bg-green-50 text-gray-800">
+    <!-- Header -->
+    <header class="bg-green-700 text-white py-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center px-4 relative">
+            <div class="flex items-center space-x-2">
+                <img src="https://raw.githubusercontent.com/ItzGirin24/TelugeAgro/refs/heads/main/logo%20Teluge.jpg" alt="Logo Teluge Agro" class="w-8 h-8 rounded-full">
+                <h1 class="text-2xl font-bold text-shadow-green">Teluge Agro</h1>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="index.html" class="hover:text-green-300">Beranda</a>
+                <a href="leadingpage.html" class="hover:text-green-300">Tentang</a>
+                <a href="store.html" class="hover:text-green-300">Toko</a>
+                <a href="cart.html" class="hover:text-green-300">Keranjang</a>
+            </nav>
+            <button id="hamburger-btn" class="md:hidden focus:outline-none">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <nav id="mobile-menu" class="hidden bg-green-600 text-white px-4 py-2 md:hidden">
+            <a href="index.html" class="block py-2 hover:text-green-300">Beranda</a>
+            <a href="leadingpage.html" class="block py-2 hover:text-green-300">Tentang</a>
+            <a href="store.html" class="block py-2 hover:text-green-300">Toko</a>
+            <a href="cart.html" class="block py-2 hover:text-green-300">Keranjang</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-2xl md:text-3xl font-bold text-center text-green-800 mb-8" data-aos="fade-up">Lacak Pesanan Anda</h2>
+
+            <!-- Order Search -->
+            <div class="bg-white rounded-lg shadow-lg p-4 md:p-6 mb-8" data-aos="fade-up">
+                <h3 class="text-lg md:text-xl font-semibold text-green-700 mb-4">Masukkan ID Pesanan</h3>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input type="text" id="orderIdInput" placeholder="Masukkan ID pesanan Anda"
+                           class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base">
+                    <button id="trackOrderBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition whitespace-nowrap">
+                        Lacak Pesanan
+                    </button>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">ID pesanan dapat ditemukan di email konfirmasi pesanan Anda</p>
+            </div>
+
+                <!-- Order Status Display -->
+                <div id="orderStatus" class="hidden bg-white rounded-lg shadow-lg p-4 md:p-6 max-w-sm mx-auto" data-aos="fade-up">
+                    <div class="mb-4 md:mb-6">
+                        <h3 class="text-lg md:text-xl font-semibold text-green-700 mb-2">Status Pesanan</h3>
+                        <p class="text-gray-600 text-sm md:text-base break-words">ID Pesanan: <span id="displayOrderId" class="font-semibold"></span></p>
+                    </div>
+
+                <!-- Progress Bar -->
+                <div class="mb-6">
+                    <div class="flex flex-wrap justify-between items-center mb-3 overflow-x-auto no-scrollbar gap-2">
+                        <div class="flex items-center min-w-0 flex-shrink-0">
+                            <div id="step1" class="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm step-circle">1</div>
+                            <span class="ml-2 text-xs md:text-sm font-medium whitespace-nowrap">Proses</span>
+                        </div>
+                        <div class="flex items-center min-w-0 flex-shrink-0">
+                            <div id="step2" class="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm step-circle">2</div>
+                            <span class="ml-2 text-xs md:text-sm font-medium whitespace-nowrap">Sedang Dikemas</span>
+                        </div>
+                        <div class="flex items-center min-w-0 flex-shrink-0">
+                            <div id="step3" class="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm step-circle">3</div>
+                            <span class="ml-2 text-xs md:text-sm font-medium whitespace-nowrap">Pengiriman</span>
+                        </div>
+                        <div class="flex items-center min-w-0 flex-shrink-0">
+                            <div id="step4" class="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm step-circle">4</div>
+                            <span class="ml-2 text-xs md:text-sm font-medium whitespace-nowrap">Sampai Tujuan</span>
+                        </div>
+                    </div>
+                    <div class="relative h-1 rounded-full bg-gray-200">
+                        <div id="progressBar" class="absolute top-0 left-0 h-1 bg-green-600 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Status Details -->
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-semibold text-green-700 mb-2 text-base">Detail Pesanan</h4>
+                        <div id="orderDetails" class="space-y-1 text-sm md:text-base break-words">
+                            <!-- Order details will be populated here -->
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-green-700 mb-2 text-base">Status Pembayaran</h4>
+                        <div id="paymentStatus" class="p-3 rounded-lg border-2 text-sm md:text-base break-words">
+                            <!-- Payment status will be shown here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Reminder -->
+                <div id="paymentReminder" class="mt-4 p-3 bg-orange-100 border-l-4 border-orange-500 rounded-lg hidden text-sm md:text-base break-words">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-orange-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        <div>
+                            <h4 class="font-semibold text-orange-800">Pembayaran Belum Diterima</h4>
+                            <p class="text-orange-700">Silakan segera lakukan pembayaran agar pesanan dapat diproses.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Success -->
+                <div id="paymentSuccess" class="mt-4 p-3 bg-green-100 border-l-4 border-green-500 rounded-lg hidden text-sm md:text-base break-words">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div>
+                            <h4 class="font-semibold text-green-800">Pembayaran Diterima</h4>
+                            <p class="text-green-700">Terima kasih! Pembayaran Anda telah diterima dan pesanan sedang diproses.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="hidden bg-red-100 border-l-4 border-red-500 p-4 rounded-lg" data-aos="fade-up">
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-semibold text-red-800">Pesanan Tidak Ditemukan</h4>
+                        <p class="text-red-700 text-sm">ID pesanan yang Anda masukkan tidak valid atau tidak ditemukan. Silakan periksa kembali ID pesanan Anda.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2017 Teluge Agro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        .step-circle {
+            background-color: #d1d5db;
+            color: #6b7280;
+            transition: all 0.3s ease;
+        }
+        .step-circle.active {
+            background-color: #16a34a;
+            color: white;
+        }
+        .step-circle.completed {
+            background-color: #16a34a;
+            color: white;
+        }
+        .text-shadow-green {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+
+    <script type="module">
+        // Firebase SDK imports
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+        import {
+            getFirestore,
+            doc,
+            getDoc
+        } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB2sLqWwZIxr65c3CcNgKCCjmDTeDlSnfY",
+            authDomain: "telugeagro2025.firebaseapp.com",
+            projectId: "telugeagro2025",
+            storageBucket: "telugeagro2025.firebasestorage.app",
+            messagingSenderId: "1029963109637",
+            appId: "1:1029963109637:web:86824d0db45e1489b3136c",
+            measurementId: "G-XF1JDPME66"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Order status mapping
+        const statusMap = {
+            'process': { step: 1, label: 'Proses', color: 'bg-blue-500' },
+            'packing': { step: 2, label: 'Sedang Dikemas', color: 'bg-yellow-500' },
+            'shipping': { step: 3, label: 'Pengiriman', color: 'bg-orange-500' },
+            'delivered': { step: 4, label: 'Sampai Tujuan', color: 'bg-green-500' }
+        };
+
+        // Track order function
+        async function trackOrder(orderId) {
+            try {
+                const orderDoc = await getDoc(doc(db, 'orders', orderId));
+
+                if (orderDoc.exists()) {
+                    const order = orderDoc.data();
+                    displayOrderStatus(order, orderId);
+                    hideErrorMessage();
+                } else {
+                    showErrorMessage();
+                    hideOrderStatus();
+                }
+            } catch (error) {
+                console.error('Error tracking order:', error);
+                showErrorMessage();
+                hideOrderStatus();
+            }
+        }
+
+        function displayOrderStatus(order, orderId) {
+            const orderStatusDiv = document.getElementById('orderStatus');
+            const displayOrderId = document.getElementById('displayOrderId');
+            const orderDetails = document.getElementById('orderDetails');
+            const paymentStatus = document.getElementById('paymentStatus');
+
+            // Set order ID
+            displayOrderId.textContent = orderId;
+
+            // Display order details
+            orderDetails.innerHTML = `
+                <p><strong>Nama:</strong> ${order.customerName || order.name}</p>
+                <p><strong>Email:</strong> ${order.email}</p>
+                <p><strong>Telepon:</strong> ${order.phone || 'N/A'}</p>
+                <p><strong>Total:</strong> Rp. ${order.total.toFixed(0)}</p>
+                <p><strong>Tanggal:</strong> ${order.timestamp.toDate().toLocaleString('id-ID')}</p>
+            `;
+
+            // Display payment status
+            const paymentPaid = order.paymentStatus === 'paid';
+            paymentStatus.className = `p-4 rounded-lg border-2 ${paymentPaid ? 'border-green-500 bg-green-50' : 'border-orange-500 bg-orange-50'}`;
+            paymentStatus.innerHTML = `
+                <div class="flex items-center">
+                    <div class="w-4 h-4 rounded-full ${paymentPaid ? 'bg-green-500' : 'bg-orange-500'} mr-3"></div>
+                    <div>
+                        <p class="font-semibold ${paymentPaid ? 'text-green-800' : 'text-orange-800'}">
+                            ${paymentPaid ? 'Sudah Dibayar' : 'Belum Dibayar'}
+                        </p>
+                        <p class="text-sm ${paymentPaid ? 'text-green-600' : 'text-orange-600'}">
+                            ${paymentPaid ? 'Pembayaran telah diterima' : 'Menunggu pembayaran'}
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            // Update progress bar and steps
+            updateProgress(order.status || 'process', paymentPaid);
+
+            // Show/hide payment notifications
+            const paymentReminder = document.getElementById('paymentReminder');
+            const paymentSuccess = document.getElementById('paymentSuccess');
+
+            if (!paymentPaid) {
+                paymentReminder.classList.remove('hidden');
+                paymentSuccess.classList.add('hidden');
+            } else {
+                paymentReminder.classList.add('hidden');
+                paymentSuccess.classList.remove('hidden');
+            }
+
+            // Show order status
+            orderStatusDiv.classList.remove('hidden');
+            orderStatusDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateProgress(status, paymentPaid) {
+            const statusInfo = statusMap[status] || statusMap['process'];
+            const progressPercentage = (statusInfo.step / 4) * 100;
+
+            // Update progress bar
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${progressPercentage}%`;
+
+            // Update step circles
+            for (let i = 1; i <= 4; i++) {
+                const stepElement = document.getElementById(`step${i}`);
+                stepElement.className = 'w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm step-circle';
+
+                if (i < statusInfo.step) {
+                    stepElement.classList.add('completed');
+                } else if (i === statusInfo.step) {
+                    stepElement.classList.add('active');
+                }
+            }
+
+            // If payment not paid, don't progress beyond first step
+            if (!paymentPaid && statusInfo.step > 1) {
+                const progressBar = document.getElementById('progressBar');
+                progressBar.style.width = '0%';
+                document.getElementById('step1').classList.add('active');
+                for (let i = 2; i <= 4; i++) {
+                    document.getElementById(`step${i}`).classList.remove('active', 'completed');
+                }
+            }
+        }
+
+        function showErrorMessage() {
+            document.getElementById('errorMessage').classList.remove('hidden');
+        }
+
+        function hideErrorMessage() {
+            document.getElementById('errorMessage').classList.add('hidden');
+        }
+
+        function hideOrderStatus() {
+            document.getElementById('orderStatus').classList.add('hidden');
+        }
+
+        // Event listeners
+        document.getElementById('trackOrderBtn').addEventListener('click', () => {
+            const orderId = document.getElementById('orderIdInput').value.trim();
+            if (orderId) {
+                trackOrder(orderId);
+            }
+        });
+
+        document.getElementById('orderIdInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const orderId = e.target.value.trim();
+                if (orderId) {
+                    trackOrder(orderId);
+                }
+            }
+        });
+
+        // Hamburger menu toggle
+        document.getElementById('hamburger-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
