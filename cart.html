@@ -8,7 +8,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <script>
+        // Initialize EmailJS
+        (function(){
+            emailjs.init("sFdQfCubtceDeQ0i3"); // Replace with your EmailJS User ID
+        })();
+    </script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
         
@@ -1140,7 +1148,11 @@
         function showPaymentSuccess(orderId, total, orderData) {
             // Create confetti effect
             createConfetti();
-            
+
+            // Send email and WhatsApp notifications
+            sendEmail(orderData, orderId, total);
+            sendWhatsApp(orderData, orderId, total);
+
             // Show success modal
             const successModal = document.createElement('div');
             successModal.className = 'modal fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
@@ -1155,7 +1167,7 @@
                         <p class="text-sm text-gray-600 mt-2">Total Pembayaran:</p>
                         <p class="text-2xl font-bold text-green-600">Rp ${formatPrice(total)}</p>
                     </div>
-                    <p class="text-sm text-gray-500 mb-6">Kami akan menghubungi Anda melalui WhatsApp untuk konfirmasi dan pengaturan pengiriman.</p>
+                    <p class="text-sm text-gray-500 mb-6">Kami akan menghubungi Anda melalui WhatsApp untuk konfirmasi dan pengaturan pengiriman. Email konfirmasi juga telah dikirim.</p>
                     <div class="flex gap-3">
                         <button onclick="location.href='store.html'" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-colors duration-300">
                             Belanja Lagi
@@ -1166,9 +1178,9 @@
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(successModal);
-            
+
             // Auto remove after 10 seconds
             setTimeout(() => {
                 if (document.body.contains(successModal)) {
@@ -1182,6 +1194,59 @@
             const message = `Halo TelugeAgro! Saya telah melakukan pemesanan dengan Order ID #${orderId.substring(0, 8).toUpperCase()} dengan total Rp ${formatPrice(total)}. Mohon konfirmasi dan informasi pengiriman. Terima kasih!`;
             const whatsappUrl = `https://wa.me/628112638318?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
+        }
+
+        // Send Email using EmailJS
+        function sendEmail(orderData, orderId, total) {
+            const templateParams = {
+                to_email: orderData.email,
+                customer_name: orderData.name,
+                order_id: orderId.substring(0, 8).toUpperCase(),
+                total_amount: formatPrice(total),
+                items: orderData.items.map(item => `${item.product} (${item.quantity} kg)`).join(', '),
+                phone: orderData.phone,
+                address: orderData.address,
+                notes: orderData.notes || 'Tidak ada catatan'
+            };
+
+            emailjs.send('service_m4i8r55', 'template_16sgakk', templateParams)
+                .then(function(response) {
+                    console.log('Email sent successfully:', response);
+                    showToast('Email konfirmasi telah dikirim!');
+                }, function(error) {
+                    console.error('Email send failed:', error);
+                    showToast('Gagal mengirim email konfirmasi', 'error');
+                });
+        }
+        // Send WhatsApp message using CallMeBot
+        function sendWhatsApp(orderData, orderId, total) {
+            let phone = orderData.phone;
+            if (phone.startsWith('+62')) {
+                phone = phone.substring(3);
+            } else if (phone.startsWith('62')) {
+                phone = phone.substring(2);
+            } else if (phone.startsWith('0')) {
+                phone = phone.substring(1);
+            }
+
+            const message = `Pesanan baru dari ${orderData.name}. Order ID: #${orderId.substring(0, 8).toUpperCase()}. Total: Rp ${formatPrice(total)}. Produk: ${orderData.items.map(item => `${item.product} (${item.quantity}kg)`).join(', ')}. Alamat: ${orderData.address}. Catatan: ${orderData.notes || 'Tidak ada'}.`;
+
+            const url = `https://api.callmebot.com/whatsapp.php?phone=62${phone}&text=${encodeURIComponent(message)}&apikey=YOUR_CALLMEBOT_API_KEY`;
+
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        console.log('WhatsApp message sent successfully');
+                        showToast('Pesan WhatsApp telah dikirim!');
+                    } else {
+                        console.error('WhatsApp send failed');
+                        showToast('Gagal mengirim pesan WhatsApp', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error sending WhatsApp:', error);
+                    showToast('Gagal mengirim pesan WhatsApp', 'error');
+                });
         }
 
         // Confetti Effect

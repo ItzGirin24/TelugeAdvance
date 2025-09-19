@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfirmasi Pesanan TelugeAgro</title>
+    <style>
+        /* Reset and base styles */
+        body, table, td, p, a, li, blockquote {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+        }
+
+        /* Base */
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Container */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Content */
+        .content {
+            padding: 30px 20px;
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            color: #22c55e;
+            margin-bottom: 20px;
+        }
+
+        /* Order Details Box */
+        .order-box {
+            background-color: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .order-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #16a34a;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #22c55e;
+            padding-bottom: 10px;
+        }
+
+        .order-item {
+            margin: 8px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #dcfce7;
+        }
+
+        .order-label {
+            font-weight: 600;
+            color: #166534;
+            display: inline-block;
+            min-width: 120px;
+        }
+
+        .order-value {
+            color: #374151;
+        }
+
+        /* Shipping Info */
+        .shipping-box {
+            background-color: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .shipping-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d97706;
+            margin-bottom: 15px;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white !important;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        /* Responsive */
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+            }
+            .content {
+                padding: 20px 15px !important;
+            }
+            .header {
+                padding: 20px 15px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <table class="email-container" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td class="header">
+                <h1 class="logo-text">🍌 TelugeAgro</h1>
+                <p style="margin: 10px 0 0 0; font-size: 16px;">Konfirmasi Pesanan Berhasil</p>
+            </td>
+        </tr>
+        <tr>
+            <td class="content">
+                <p class="greeting">Halo <strong>{{customer_name}}</strong>,</p>
+
+                <p>Terima kasih telah mempercayai TelugeAgro untuk kebutuhan pisang Anda! 🎉</p>
+
+                <p>Pesanan Anda telah berhasil diproses dan akan segera kami siapkan untuk pengiriman.</p>
+
+                <div class="order-box">
+                    <h2 class="order-title">📋 Detail Pesanan</h2>
+                    <div class="order-item">
+                        <span class="order-label">Order ID:</span>
+                        <span class="order-value"><strong>#{{order_id}}</strong></span>
+                    </div>
+                    <div class="order-item">
+                        <span class="order-label">Total Pembayaran:</span>
+                        <span class="order-value"><strong style="color: #16a34a; font-size: 18px;">Rp {{total_amount}}</strong></span>
+                    </div>
+                    <div class="order-item">
+                        <span class="order-label">Produk:</span>
+                        <span class="order-value">{{items}}</span>
+                    </div>
+                </div>
+
+                <div class="shipping-box">
+                    <h2 class="shipping-title">📍 Informasi Pengiriman</h2>
+                    <div class="order-item">
+                        <span class="order-label">Alamat:</span>
+                        <span class="order-value">{{address}}</span>
+                    </div>
+                    <div class="order-item">
+                        <span class="order-label">Telepon:</span>
+                        <span class="order-value">{{phone}}</span>
+                    </div>
+                    <div class="order-item">
+                        <span class="order-label">Catatan:</span>
+                        <span class="order-value">{{notes}}</span>
+                    </div>
+                </div>
+
+                <p><strong>Apa yang terjadi selanjutnya?</strong></p>
+                <ul style="padding-left: 20px;">
+                    <li>Kami akan memproses pesanan dalam 1-2 jam</li>
+                    <li>Tim kami akan menghubungi Anda untuk konfirmasi pengiriman</li>
+                    <li>Pesanan akan dikirim sesuai jadwal yang disepakati</li>
+                </ul>
+
+                <p>Jika ada pertanyaan, jangan ragu untuk menghubungi kami melalui WhatsApp atau email.</p>
+
+                <div style="text-align: center;">
+                    <a href="https://wa.me/628112638318?text=Halo%20TelugeAgro,%20saya%20ingin%20menanyakan%20tentang%20pesanan%20{{order_id}}" class="cta-button">
+                        💬 Hubungi via WhatsApp
+                    </a>
+                </div>
+
+                <p style="text-align: center; margin-top: 30px; color: #6b7280; font-style: italic;">
+                    "Pisang Berkualitas untuk Kebahagiaan Anda" 🌟
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td class="footer">
+                <p><strong>TelugeAgro</strong></p>
+                <p>Spesialis Pisang Berkualitas Sejak 2020</p>
+                <p>📞 WhatsApp: +62 811-263-8318</p>
+                <p>📧 Email: info@telugeagro.com</p>
+                <p>&copy; 2025 TelugeAgro. All rights reserved.</p>
+                <p style="font-size: 10px; margin-top: 15px;">
+                    Email ini dikirim secara otomatis. Jika Anda tidak melakukan pemesanan, abaikan email ini.
+                </p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
