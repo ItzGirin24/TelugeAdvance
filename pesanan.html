@@ -47,13 +47,37 @@
 
             <!-- Order Search -->
             <div class="bg-white rounded-lg shadow-lg p-4 md:p-6 mb-8" data-aos="fade-up">
-                <h3 class="text-lg md:text-xl font-semibold text-green-700 mb-4">Masukkan ID Pesanan</h3>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <input type="text" id="orderIdInput" placeholder="Masukkan ID pesanan Anda"
-                           class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base">
-                    <button id="trackOrderBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition whitespace-nowrap">
-                        Lacak Pesanan
-                    </button>
+                <h3 class="text-lg md:text-xl font-semibold text-green-700 mb-4">Cari Pesanan Anda</h3>
+                <div class="space-y-4">
+                    <!-- Search Type Selection -->
+                    <div class="flex gap-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="searchType" value="orderId" checked class="mr-2">
+                            <span class="text-sm">Cari dengan ID Pesanan</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="searchType" value="email" class="mr-2">
+                            <span class="text-sm">Cari dengan Email</span>
+                        </label>
+                    </div>
+
+                    <!-- Order ID Input -->
+                    <div id="orderIdSection" class="flex flex-col sm:flex-row gap-4">
+                        <input type="text" id="orderIdInput" placeholder="Masukkan ID pesanan Anda"
+                               class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base">
+                        <button id="trackOrderBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition whitespace-nowrap">
+                            Lacak Pesanan
+                        </button>
+                    </div>
+
+                    <!-- Email Input -->
+                    <div id="emailSection" class="hidden flex flex-col sm:flex-row gap-4">
+                        <input type="email" id="emailInput" placeholder="Masukkan email Anda"
+                               class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base">
+                        <button id="searchByEmailBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition whitespace-nowrap">
+                            Cari Pesanan
+                        </button>
+                    </div>
                 </div>
                 <p class="text-sm text-gray-600 mt-2">ID pesanan dapat ditemukan di email konfirmasi pesanan Anda</p>
             </div>
@@ -180,7 +204,12 @@
         import {
             getFirestore,
             doc,
-            getDoc
+            getDoc,
+            query,
+            where,
+            getDocs,
+            orderBy,
+            collection
         } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
 
         const firebaseConfig = {
@@ -228,6 +257,103 @@
                 showErrorMessage();
                 hideOrderStatus();
             }
+        }
+
+        // Search orders by email
+        async function searchOrdersByEmail(email) {
+            try {
+                const ordersQuery = query(collection(db, 'orders'), where('email', '==', email), orderBy('timestamp', 'desc'));
+                const querySnapshot = await getDocs(ordersQuery);
+
+                if (!querySnapshot.empty) {
+                    const orders = [];
+                    querySnapshot.forEach((doc) => {
+                        orders.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+
+                    displayMultipleOrders(orders);
+                    hideErrorMessage();
+                } else {
+                    showErrorMessage();
+                    hideOrderStatus();
+                }
+            } catch (error) {
+                console.error('Error searching orders by email:', error);
+                showErrorMessage();
+                hideOrderStatus();
+            }
+        }
+
+        // Display multiple orders
+        function displayMultipleOrders(orders) {
+            const orderStatusDiv = document.getElementById('orderStatus');
+            const displayOrderId = document.getElementById('displayOrderId');
+            const orderDetails = document.getElementById('orderDetails');
+            const paymentStatus = document.getElementById('paymentStatus');
+
+            // Set title for multiple orders
+            displayOrderId.textContent = `${orders.length} Pesanan Ditemukan`;
+
+            // Display order list
+            orderDetails.innerHTML = orders.map(order => `
+                <div class="border-b border-gray-200 pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-green-700">ID: ${order.id}</h4>
+                        <button onclick="trackOrder('${order.id}')" class="text-green-600 hover:text-green-700 text-sm font-medium">
+                            Lihat Detail →
+                        </button>
+                    </div>
+                    <p><strong>Nama:</strong> ${order.customerName || order.name}</p>
+                    <p><strong>Total:</strong> Rp. ${order.total.toFixed(0)}</p>
+                    <p><strong>Tanggal:</strong> ${order.timestamp.toDate().toLocaleString('id-ID')}</p>
+                    <p><strong>Status:</strong> ${getStatusLabel(order.status || 'process')}</p>
+                </div>
+            `).join('');
+
+            // Display payment status summary
+            const paidOrders = orders.filter(order => order.paymentStatus === 'paid').length;
+            paymentStatus.className = 'p-4 rounded-lg border-2 border-blue-500 bg-blue-50';
+            paymentStatus.innerHTML = `
+                <div class="flex items-center">
+                    <div class="w-4 h-4 rounded-full bg-blue-500 mr-3"></div>
+                    <div>
+                        <p class="font-semibold text-blue-800">
+                            ${paidOrders}/${orders.length} Pesanan Sudah Dibayar
+                        </p>
+                        <p class="text-sm text-blue-600">
+                            Klik "Lihat Detail" untuk informasi lengkap
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            // Hide progress bar for multiple orders view
+            document.getElementById('progressBar').style.width = '0%';
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`step${i}`).className = 'w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm step-circle';
+            }
+
+            // Hide payment notifications
+            document.getElementById('paymentReminder').classList.add('hidden');
+            document.getElementById('paymentSuccess').classList.add('hidden');
+
+            // Show order status
+            orderStatusDiv.classList.remove('hidden');
+            orderStatusDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Helper function to get status label
+        function getStatusLabel(status) {
+            const labels = {
+                'process': 'Proses',
+                'packing': 'Sedang Dikemas',
+                'shipping': 'Pengiriman',
+                'delivered': 'Sampai Tujuan'
+            };
+            return labels[status] || 'Proses';
         }
 
         function displayOrderStatus(order, orderId) {
@@ -328,6 +454,22 @@
             document.getElementById('orderStatus').classList.add('hidden');
         }
 
+        // Radio button toggle functionality
+        document.querySelectorAll('input[name="searchType"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const orderIdSection = document.getElementById('orderIdSection');
+                const emailSection = document.getElementById('emailSection');
+
+                if (e.target.value === 'email') {
+                    orderIdSection.classList.add('hidden');
+                    emailSection.classList.remove('hidden');
+                } else {
+                    emailSection.classList.add('hidden');
+                    orderIdSection.classList.remove('hidden');
+                }
+            });
+        });
+
         // Event listeners
         document.getElementById('trackOrderBtn').addEventListener('click', () => {
             const orderId = document.getElementById('orderIdInput').value.trim();
@@ -336,11 +478,27 @@
             }
         });
 
+        document.getElementById('searchByEmailBtn').addEventListener('click', () => {
+            const email = document.getElementById('emailInput').value.trim();
+            if (email) {
+                searchOrdersByEmail(email);
+            }
+        });
+
         document.getElementById('orderIdInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const orderId = e.target.value.trim();
                 if (orderId) {
                     trackOrder(orderId);
+                }
+            }
+        });
+
+        document.getElementById('emailInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const email = e.target.value.trim();
+                if (email) {
+                    searchOrdersByEmail(email);
                 }
             }
         });
