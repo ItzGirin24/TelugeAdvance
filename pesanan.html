@@ -72,7 +72,7 @@
 
                     <!-- Email Input -->
                     <div id="emailSection" class="hidden flex flex-col sm:flex-row gap-4">
-                        <input type="email" id="emailInput" placeholder="Masukkan email Anda"
+                        <input type="email" id="emailInput" placeholder="Masukkan email yang tertaut pada pesanan Anda"
                                class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base">
                         <button id="searchByEmailBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition whitespace-nowrap">
                             Cari Pesanan
@@ -234,7 +234,8 @@
             where,
             getDocs,
             orderBy,
-            collection
+            collection,
+            onSnapshot
         } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
 
         const firebaseConfig = {
@@ -261,12 +262,15 @@
             'process': { step: 1, label: 'Proses', color: 'bg-blue-500' },
             'packing': { step: 2, label: 'Sedang Dikemas', color: 'bg-yellow-500' },
             'shipping': { step: 3, label: 'Pengiriman', color: 'bg-orange-500' },
-            'delivered': { step: 4, label: 'Sampai Tujuan', color: 'bg-green-500' }
+            'delivered': { step: 4, label: 'Sampai Tujuan', color: 'bg-green-500' },
+            'completed': { step: 5, label: 'Selesai', color: 'bg-green-600' }
         };
 
         // Global variable to track navigation state
         let currentView = 'search'; // 'search', 'multiple', 'single'
         let multipleOrdersData = []; // Store multiple orders data
+        let currentOrderId = null; // Track current order ID for real-time updates
+        let unsubscribeListener = null; // Store unsubscribe function for real-time listener
 
         // Track order function (make it global for onclick access)
         window.trackOrder = async function(orderId) {
@@ -297,7 +301,9 @@
                 if (orderDoc.exists()) {
                     const order = orderDoc.data();
                     currentView = 'single';
+                    currentOrderId = orderId;
                     displayOrderStatus(order, orderId);
+                    setupRealTimeListener(orderId);
                     hideErrorMessage();
                 } else {
                     showErrorMessage();
@@ -307,6 +313,95 @@
                 console.error('Error tracking order:', error);
                 showErrorMessage();
                 hideOrderStatus();
+            }
+        }
+
+        // Setup real-time listener for order updates
+        function setupRealTimeListener(orderId) {
+            // Clean up existing listener if any
+            if (unsubscribeListener) {
+                unsubscribeListener();
+                unsubscribeListener = null;
+            }
+
+            try {
+                const orderRef = doc(db, 'orders', orderId);
+
+                // Set up real-time listener
+                unsubscribeListener = onSnapshot(orderRef, (doc) => {
+                    if (doc.exists()) {
+                        const updatedOrder = doc.data();
+                        console.log('Order updated in real-time:', updatedOrder);
+
+                        // Update the display with new data
+                        displayOrderStatus(updatedOrder, orderId);
+
+                        // Show notification about the update
+                        showUpdateNotification(updatedOrder);
+                    } else {
+                        console.log('Order document no longer exists');
+                        showErrorMessage();
+                        hideOrderStatus();
+                    }
+                }, (error) => {
+                    console.error('Error in real-time listener:', error);
+                });
+
+                console.log('Real-time listener set up for order:', orderId);
+            } catch (error) {
+                console.error('Error setting up real-time listener:', error);
+            }
+        }
+
+        // Show notification when order is updated
+        function showUpdateNotification(order) {
+            // Remove any existing notification
+            const existingNotification = document.getElementById('updateNotification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.id = 'updateNotification';
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-full';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <p class="font-semibold">Status Pesanan Diperbarui!</p>
+                        <p class="text-sm opacity-90">Status pesanan Anda telah berubah</p>
+                    </div>
+                </div>
+            `;
+
+            // Add to page
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        // Clean up real-time listener
+        function cleanupRealTimeListener() {
+            if (unsubscribeListener) {
+                console.log('Cleaning up real-time listener');
+                unsubscribeListener();
+                unsubscribeListener = null;
             }
         }
 
@@ -643,6 +738,12 @@
 
         // Back button functionality with proper navigation
         document.getElementById('backToSearchBtn').addEventListener('click', () => {
+            // Clean up real-time listener when leaving single order view
+            if (currentView === 'single') {
+                cleanupRealTimeListener();
+                currentOrderId = null;
+            }
+
             hideOrderStatus();
             hideErrorMessage();
 
