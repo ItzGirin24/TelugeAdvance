@@ -116,41 +116,9 @@
 
 
     <!-- Admin Panel Popup -->
-    <div id="adminMenu" class="hidden fixed bottom-16 left-4 bg-white rounded-lg shadow-xl border border-gray-200 z-40 w-64">
-        <div class="p-4 border-b border-gray-100">
-            <p class="text-sm font-semibold text-gray-800">TelugeAgro_Admin</p>
-            <p class="text-xs text-gray-400">Admin Panel</p>
-        </div>
-        <div class="flex flex-col">
-            <button onclick="manageProducts()"
-                class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 3a.75.75 0 01.75.75V6a.75.75 0 01-.75.75H6a.75.75 0 01-.75-.75V3.75A.75.75 0 016 3h3.75zM18 3.75A.75.75 0 0017.25 3H13.5a.75.75 0 00-.75.75V6a.75.75 0 00.75.75h3.75A.75.75 0 0018 6V3.75zM9.75 13.5a.75.75 0 01.75.75V18a.75.75 0 01-.75.75H6a.75.75 0 01-.75-.75v-3.75A.75.75 0 016 13.5h3.75zM18 13.5a.75.75 0 00-.75.75V18a.75.75 0 00.75.75h3.75a.75.75 0 00.75-.75v-3.75a.75.75 0 00-.75-.75H18z"/>
-                </svg>
-                Manage Products
-            </button>
-            <button onclick="logoutAdminKeepLogo()"
-                class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-9A2.25 2.25 0 002.25 5.25v13.5A2.25 2.25 0 004.5 21h9a2.25 2.25 0 002.25-2.25V15M12 9l3-3m0 0l3 3m-3-3v12"/>
-                </svg>
-                Logout
-            </button>
-            <button onclick="manageOrders()"
-                class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h4l3 8 4-16 3 8h4" />
-                </svg>
-                Pesanan
-            </button>
-            <button onclick="manageWeb()"
-                class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                Manage Web
-            </button>
-
+    <div id="adminMenu" class="hidden fixed bottom-0 left-0 right-0 md:bottom-16 md:left-4 md:right-auto bg-white rounded-lg shadow-xl border border-gray-200 z-40 w-full md:w-64">
+        <div id="adminMenuContent">
+            <!-- Dynamic content will be inserted here -->
         </div>
     </div>
 
@@ -441,11 +409,42 @@
                     const status = order.status || 'pending';
                     const statusColor = status === 'completed' ? 'bg-green-100 text-green-800' :
                                        status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                                       'bg-blue-100 text-blue-800';
+                                       status === 'process' ? 'bg-yellow-100 text-yellow-800' :
+                                       status === 'packing' ? 'bg-orange-100 text-orange-800' :
+                                       status === 'shipping' ? 'bg-blue-100 text-blue-800' :
+                                       status === 'delivered' ? 'bg-purple-100 text-purple-800' :
+                                       'bg-gray-100 text-gray-800';
 
                     // Count pending orders
                     if (status === 'pending') {
                         pendingCount++;
+                    }
+
+                    // Helper function to format address
+                    function formatAddress(order) {
+                        const addressFields = [
+                            order.shippingAddress,
+                            order.deliveryAddress,
+                            order.address,
+                            order.customerAddress
+                        ];
+
+                        for (const addr of addressFields) {
+                            if (addr) {
+                                if (typeof addr === 'string') {
+                                    return addr;
+                                } else if (typeof addr === 'object') {
+                                    const parts = [];
+                                    if (addr.street) parts.push(addr.street);
+                                    if (addr.city) parts.push(addr.city);
+                                    if (addr.province) parts.push(addr.province);
+                                    if (addr.postalCode) parts.push(addr.postalCode);
+                                    if (addr.country) parts.push(addr.country);
+                                    return parts.join(', ');
+                                }
+                            }
+                        }
+                        return 'N/A';
                     }
 
                     orderDiv.innerHTML = `
@@ -453,6 +452,7 @@
                         <p class="text-gray-600 mb-2">Customer: ${order.customerName || order.name}</p>
                         <p class="text-gray-600 mb-2">Email: ${order.email}</p>
                         <p class="text-gray-600 mb-2">Phone: ${order.phone || 'N/A'}</p>
+                        <p class="text-gray-600 mb-2">Address: ${formatAddress(order)}</p>
                 <p class="text-gray-600 mb-2">Total: Rp. ${order.total.toFixed(0)}</p>
                 <p class="text-gray-600 mb-2">Date: ${order.timestamp.toDate().toLocaleString()}</p>
                         <p class="mb-4">
@@ -461,12 +461,15 @@
                             </span>
                         </p>
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Update Status:</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Update Status Pesanan:</label>
                             <div class="flex gap-2 flex-wrap">
-                                <button onclick="updateOrderStatus('${doc.id}', 'pending')" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Pending</button>
-                                <button onclick="updateOrderStatus('${doc.id}', 'completed')" class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600">Completed</button>
-                                <button onclick="updateOrderStatus('${doc.id}', 'cancelled')" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Cancelled</button>
-                                <button onclick="deleteOrder('${doc.id}')" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">Delete Order</button>
+                                <button onclick="updateOrderStatus('${doc.id}', 'process')" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium">Proses</button>
+                                <button onclick="updateOrderStatus('${doc.id}', 'packing')" class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm font-medium">Sedang Dikemas</button>
+                                <button onclick="updateOrderStatus('${doc.id}', 'shipping')" class="px-3 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600 text-sm font-medium">Pengiriman</button>
+                                <button onclick="updateOrderStatus('${doc.id}', 'delivered')" class="px-3 py-1 bg-purple-500 text-white rounded hover:bg-purple-600 text-sm font-medium">Sampai Tujuan</button>
+                                <button onclick="updateOrderStatus('${doc.id}', 'completed')" class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm font-medium">Selesai</button>
+                                <button onclick="updateOrderStatus('${doc.id}', 'cancelled')" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm font-medium">Batal</button>
+                                <button onclick="deleteOrder('${doc.id}')" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium">Hapus</button>
                             </div>
                         </div>
                         <div class="space-y-2">
@@ -516,6 +519,65 @@
 
         function showAdminMenu() {
             const adminMenu = document.getElementById('adminMenu');
+            const menuContent = document.getElementById('adminMenuContent');
+
+            if (isLoggedIn()) {
+                // Show full admin menu
+                menuContent.innerHTML = `
+                    <div class="p-4 border-b border-gray-100">
+                        <p class="text-sm font-semibold text-gray-800">TelugeAgro_Admin</p>
+                        <p class="text-xs text-gray-400">Admin Panel</p>
+                    </div>
+                    <div class="flex flex-col">
+                        <button onclick="manageProducts()"
+                            class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 3a.75.75 0 01.75.75V6a.75.75 0 01-.75.75H6a.75.75 0 01-.75-.75V3.75A.75.75 0 016 3h3.75zM18 3.75A.75.75 0 0017.25 3H13.5a.75.75 0 00-.75.75V6a.75.75 0 00.75.75h3.75A.75.75 0 0018 6V3.75zM9.75 13.5a.75.75 0 01.75.75V18a.75.75 0 01-.75.75H6a.75.75 0 01-.75-.75v-3.75A.75.75 0 016 13.5h3.75zM18 13.5a.75.75 0 00-.75.75V18a.75.75 0 00.75.75h3.75a.75.75 0 00.75-.75v-3.75a.75.75 0 00-.75-.75H18z"/>
+                            </svg>
+                            Manage Products
+                        </button>
+                        <button onclick="logoutAdminKeepLogo()"
+                            class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-9A2.25 2.25 0 002.25 5.25v13.5A2.25 2.25 0 004.5 21h9a2.25 2.25 0 002.25-2.25V15M12 9l3-3m0 0l3 3m-3-3v12"/>
+                            </svg>
+                            Logout
+                        </button>
+                        <button onclick="manageOrders()"
+                            class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h4l3 8 4-16 3 8h4" />
+                            </svg>
+                            Pesanan
+                        </button>
+                        <button onclick="manageWeb()"
+                            class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Manage Web
+                        </button>
+                    </div>
+                `;
+            } else {
+                // Show only logout for non-admin users
+                menuContent.innerHTML = `
+                    <div class="p-4 border-b border-gray-100">
+                        <p class="text-sm font-semibold text-gray-800">Account</p>
+                        <p class="text-xs text-gray-400">User Menu</p>
+                    </div>
+                    <div class="flex flex-col">
+                        <button onclick="logoutAdminKeepLogo()"
+                            class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-9A2.25 2.25 0 002.25 5.25v13.5A2.25 2.25 0 004.5 21h9a2.25 2.25 0 002.25-2.25V15M12 9l3-3m0 0l3 3m-3-3v12"/>
+                            </svg>
+                            Logout
+                        </button>
+                    </div>
+                `;
+            }
+
             adminMenu.classList.remove('hidden');
         }
 
@@ -568,8 +630,8 @@
         function logoutAdmin() {
             localStorage.removeItem('adminLoggedIn');
             hideAdminMenu();
-            // Redirect to login or refresh page
-            window.location.href = 'login.html'; // Assuming you have a login page
+            // Redirect to main page since we use popup modals
+            window.location.href = 'leadingpage.html';
         }
 
         // Logout function that keeps logo
