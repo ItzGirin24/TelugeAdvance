@@ -472,6 +472,37 @@
                                 <button onclick="deleteOrder('${doc.id}')" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium">Hapus</button>
                             </div>
                         </div>
+
+                        <!-- Payment Status Update Section -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Update Status Pembayaran:</label>
+                            <div class="flex gap-2 flex-wrap">
+                                <button onclick="updatePaymentStatus('${doc.id}', 'paid')" class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm font-medium flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Tandai Sudah Bayar
+                                </button>
+                                <button onclick="updatePaymentStatus('${doc.id}', 'pending')" class="px-3 py-1 bg-orange-500 text-white rounded hover:bg-orange-600 text-sm font-medium flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                    </svg>
+                                    Tandai Belum Bayar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Payment Status Display -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Status Pembayaran Saat Ini:</label>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full ${order.paymentStatus === 'paid' ? 'bg-green-500' : 'bg-orange-500'}"></div>
+                                <span class="text-sm font-medium ${order.paymentStatus === 'paid' ? 'text-green-700' : 'text-orange-700'}">
+                                    ${order.paymentStatus === 'paid' ? 'Sudah Dibayar' : 'Belum Dibayar'}
+                                </span>
+                                ${order.paymentStatus === 'paid' ? '<span class="text-xs text-green-600 ml-2">✓ Pembayaran diterima</span>' : '<span class="text-xs text-orange-600 ml-2">Menunggu pembayaran</span>'}
+                            </div>
+                        </div>
                         <div class="space-y-2">
                             ${order.items.map(item => `
                                 <div class="flex justify-between">
@@ -852,6 +883,27 @@
             } catch (error) {
                 console.error('Error updating order status:', error);
                 showToast('Error updating order status', 'error');
+            }
+        }
+
+        // Update payment status
+        async function updatePaymentStatus(orderId, newPaymentStatus) {
+            try {
+                await updateDoc(doc(db, 'orders', orderId), {
+                    paymentStatus: newPaymentStatus,
+                    updatedAt: new Date()
+                });
+                loadOrders(); // Reload orders to reflect changes
+
+                // Show appropriate notification based on payment status
+                if (newPaymentStatus === 'paid') {
+                    showToast('Status pembayaran berhasil diupdate menjadi SUDAH BAYAR', 'success');
+                } else {
+                    showToast('Status pembayaran berhasil diupdate menjadi BELUM BAYAR', 'success');
+                }
+            } catch (error) {
+                console.error('Error updating payment status:', error);
+                showToast('Error updating payment status', 'error');
             }
         }
 
