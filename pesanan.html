@@ -85,7 +85,15 @@
                 <!-- Order Status Display -->
                 <div id="orderStatus" class="hidden bg-white rounded-lg shadow-lg p-4 md:p-6 max-w-sm mx-auto" data-aos="fade-up">
                     <div class="mb-4 md:mb-6">
-                        <h3 class="text-lg md:text-xl font-semibold text-green-700 mb-2">Status Pesanan</h3>
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-lg md:text-xl font-semibold text-green-700">Status Pesanan</h3>
+                            <button id="backToSearchBtn" class="bg-gray-500 text-white px-3 py-1 rounded-lg hover:bg-gray-600 transition text-sm flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                                Kembali
+                            </button>
+                        </div>
                         <p class="text-gray-600 text-sm md:text-base break-words">ID Pesanan: <span id="displayOrderId" class="font-semibold"></span></p>
                     </div>
 
@@ -239,13 +247,39 @@
             'delivered': { step: 4, label: 'Sampai Tujuan', color: 'bg-green-500' }
         };
 
-        // Track order function
-        async function trackOrder(orderId) {
+        // Global variable to track navigation state
+        let currentView = 'search'; // 'search', 'multiple', 'single'
+        let multipleOrdersData = []; // Store multiple orders data
+
+        // Track order function (make it global for onclick access)
+        window.trackOrder = async function(orderId) {
             try {
                 const orderDoc = await getDoc(doc(db, 'orders', orderId));
 
                 if (orderDoc.exists()) {
                     const order = orderDoc.data();
+                    currentView = 'single';
+                    displayOrderStatus(order, orderId);
+                    hideErrorMessage();
+                } else {
+                    showErrorMessage();
+                    hideOrderStatus();
+                }
+            } catch (error) {
+                console.error('Error tracking order:', error);
+                showErrorMessage();
+                hideOrderStatus();
+            }
+        };
+
+        // Track single order by ID (for direct search)
+        async function trackSingleOrder(orderId) {
+            try {
+                const orderDoc = await getDoc(doc(db, 'orders', orderId));
+
+                if (orderDoc.exists()) {
+                    const order = orderDoc.data();
+                    currentView = 'single';
                     displayOrderStatus(order, orderId);
                     hideErrorMessage();
                 } else {
@@ -262,7 +296,8 @@
         // Search orders by email
         async function searchOrdersByEmail(email) {
             try {
-                const ordersQuery = query(collection(db, 'orders'), where('email', '==', email), orderBy('timestamp', 'desc'));
+                // First, get all orders for the email without orderBy to avoid index requirement
+                const ordersQuery = query(collection(db, 'orders'), where('email', '==', email));
                 const querySnapshot = await getDocs(ordersQuery);
 
                 if (!querySnapshot.empty) {
@@ -273,6 +308,16 @@
                             ...doc.data()
                         });
                     });
+
+                    // Sort orders by timestamp in descending order (newest first)
+                    orders.sort((a, b) => {
+                        if (!a.timestamp || !b.timestamp) return 0;
+                        return b.timestamp.toDate() - a.timestamp.toDate();
+                    });
+
+                    // Store orders data for back navigation
+                    multipleOrdersData = orders;
+                    currentView = 'multiple';
 
                     displayMultipleOrders(orders);
                     hideErrorMessage();
@@ -474,7 +519,7 @@
         document.getElementById('trackOrderBtn').addEventListener('click', () => {
             const orderId = document.getElementById('orderIdInput').value.trim();
             if (orderId) {
-                trackOrder(orderId);
+                trackSingleOrder(orderId);
             }
         });
 
@@ -489,7 +534,7 @@
             if (e.key === 'Enter') {
                 const orderId = e.target.value.trim();
                 if (orderId) {
-                    trackOrder(orderId);
+                    trackSingleOrder(orderId);
                 }
             }
         });
@@ -500,6 +545,27 @@
                 if (email) {
                     searchOrdersByEmail(email);
                 }
+            }
+        });
+
+        // Back button functionality with proper navigation
+        document.getElementById('backToSearchBtn').addEventListener('click', () => {
+            hideOrderStatus();
+            hideErrorMessage();
+
+            // Navigate based on current view state
+            if (currentView === 'single' && multipleOrdersData.length > 0) {
+                // If coming from single order view and we have multiple orders data, go back to multiple orders
+                currentView = 'multiple';
+                displayMultipleOrders(multipleOrdersData);
+            } else {
+                // If coming from search or no multiple orders data, go back to search form
+                currentView = 'search';
+                // Clear input fields
+                document.getElementById('orderIdInput').value = '';
+                document.getElementById('emailInput').value = '';
+                // Scroll back to search form
+                document.querySelector('.bg-white.rounded-lg.shadow-lg').scrollIntoView({ behavior: 'smooth' });
             }
         });
 
