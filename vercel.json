@@ -24,6 +24,10 @@
     {
       "src": "logo Teluge.jpg",
       "use": "@vercel/static"
+          },
+    {
+      "src": "pesanan.html",
+      "use": "@vercel/static"
     },
     {
       "src": "logo Teluge.png",
@@ -62,6 +66,11 @@
     {
       "src": "/logo Teluge.png",
       "dest": "/logo Teluge.png"
+    },
+    {
+      "src": "pesanan",
+      "dest": "/pesanan.html"
     }
   ]
 }
+
