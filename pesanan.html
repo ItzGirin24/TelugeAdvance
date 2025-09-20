@@ -97,28 +97,45 @@
                         <p class="text-gray-600 text-sm md:text-base break-words">ID Pesanan: <span id="displayOrderId" class="font-semibold"></span></p>
                     </div>
 
-                <!-- Progress Bar -->
+                <!-- Enhanced Progress Bar -->
                 <div class="mb-6">
                     <div class="flex flex-wrap justify-between items-center mb-3 overflow-x-auto no-scrollbar gap-2">
                         <div class="flex items-center min-w-0 flex-shrink-0">
-                            <div id="step1" class="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm step-circle">1</div>
+                            <div id="step1" class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm step-circle transition-all duration-300">
+                                <span id="step1-icon" class="hidden">✓</span>
+                                <span id="step1-number">1</span>
+                            </div>
                             <span class="ml-2 text-xs md:text-sm font-medium whitespace-nowrap">Proses</span>
                         </div>
                         <div class="flex items-center min-w-0 flex-shrink-0">
-                            <div id="step2" class="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm step-circle">2</div>
+                            <div id="step2" class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm step-circle transition-all duration-300">
+                                <span id="step2-icon" class="hidden">✓</span>
+                                <span id="step2-number">2</span>
+                            </div>
                             <span class="ml-2 text-xs md:text-sm font-medium whitespace-nowrap">Sedang Dikemas</span>
                         </div>
                         <div class="flex items-center min-w-0 flex-shrink-0">
-                            <div id="step3" class="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm step-circle">3</div>
+                            <div id="step3" class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm step-circle transition-all duration-300">
+                                <span id="step3-icon" class="hidden">✓</span>
+                                <span id="step3-number">3</span>
+                            </div>
                             <span class="ml-2 text-xs md:text-sm font-medium whitespace-nowrap">Pengiriman</span>
                         </div>
                         <div class="flex items-center min-w-0 flex-shrink-0">
-                            <div id="step4" class="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm step-circle">4</div>
+                            <div id="step4" class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm step-circle transition-all duration-300">
+                                <span id="step4-icon" class="hidden">✓</span>
+                                <span id="step4-number">4</span>
+                            </div>
                             <span class="ml-2 text-xs md:text-sm font-medium whitespace-nowrap">Sampai Tujuan</span>
                         </div>
                     </div>
-                    <div class="relative h-1 rounded-full bg-gray-200">
-                        <div id="progressBar" class="absolute top-0 left-0 h-1 bg-green-600 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    <div class="relative h-2 rounded-full bg-gray-200 overflow-hidden">
+                        <div id="progressBar" class="absolute top-0 left-0 h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
+                    </div>
+                    <!-- Current Status Text -->
+                    <div class="mt-3 text-center">
+                        <p id="currentStatusText" class="text-sm font-medium text-gray-600">Memproses pesanan Anda...</p>
+                        <p id="estimatedTime" class="text-xs text-gray-500 mt-1">Estimasi: 1-3 hari kerja</p>
                     </div>
                 </div>
 
@@ -410,11 +427,39 @@
             // Set order ID
             displayOrderId.textContent = orderId;
 
+            // Helper function to format address
+            function formatAddress(order) {
+                const addressFields = [
+                    order.shippingAddress,
+                    order.deliveryAddress,
+                    order.address,
+                    order.customerAddress
+                ];
+
+                for (const addr of addressFields) {
+                    if (addr) {
+                        if (typeof addr === 'string') {
+                            return addr;
+                        } else if (typeof addr === 'object') {
+                            const parts = [];
+                            if (addr.street) parts.push(addr.street);
+                            if (addr.city) parts.push(addr.city);
+                            if (addr.province) parts.push(addr.province);
+                            if (addr.postalCode) parts.push(addr.postalCode);
+                            if (addr.country) parts.push(addr.country);
+                            return parts.join(', ');
+                        }
+                    }
+                }
+                return 'N/A';
+            }
+
             // Display order details
             orderDetails.innerHTML = `
                 <p><strong>Nama:</strong> ${order.customerName || order.name}</p>
                 <p><strong>Email:</strong> ${order.email}</p>
                 <p><strong>Telepon:</strong> ${order.phone || 'N/A'}</p>
+                <p><strong>Alamat:</strong> ${formatAddress(order)}</p>
                 <p><strong>Total:</strong> Rp. ${order.total.toFixed(0)}</p>
                 <p><strong>Tanggal:</strong> ${order.timestamp.toDate().toLocaleString('id-ID')}</p>
             `;
@@ -436,7 +481,7 @@
                 </div>
             `;
 
-            // Update progress bar and steps
+            // Update progress bar and steps with enhanced functionality
             updateProgress(order.status || 'process', paymentPaid);
 
             // Show/hide payment notifications
@@ -457,34 +502,82 @@
         }
 
         function updateProgress(status, paymentPaid) {
+            console.log('updateProgress called with status:', status, 'paymentPaid:', paymentPaid);
+            console.log('Available statusMap:', statusMap);
+
             const statusInfo = statusMap[status] || statusMap['process'];
+            console.log('statusInfo:', statusInfo);
+
             const progressPercentage = (statusInfo.step / 4) * 100;
+            console.log('progressPercentage:', progressPercentage);
 
             // Update progress bar
             const progressBar = document.getElementById('progressBar');
             progressBar.style.width = `${progressPercentage}%`;
 
-            // Update step circles
+            // Update step circles with checkmarks
             for (let i = 1; i <= 4; i++) {
                 const stepElement = document.getElementById(`step${i}`);
-                stepElement.className = 'w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm step-circle';
+                const stepIcon = document.getElementById(`step${i}-icon`);
+                const stepNumber = document.getElementById(`step${i}-number`);
+
+                console.log(`Processing step ${i}, statusInfo.step: ${statusInfo.step}`);
+
+                stepElement.className = 'w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm step-circle transition-all duration-300';
 
                 if (i < statusInfo.step) {
+                    // Completed steps - show checkmark
+                    console.log(`Step ${i} is completed`);
                     stepElement.classList.add('completed');
+                    stepIcon.classList.remove('hidden');
+                    stepNumber.classList.add('hidden');
                 } else if (i === statusInfo.step) {
+                    // Current step - show number
+                    console.log(`Step ${i} is active`);
                     stepElement.classList.add('active');
+                    stepIcon.classList.add('hidden');
+                    stepNumber.classList.remove('hidden');
+                } else {
+                    // Future steps - show number
+                    console.log(`Step ${i} is future`);
+                    stepElement.classList.remove('active', 'completed');
+                    stepIcon.classList.add('hidden');
+                    stepNumber.classList.remove('hidden');
                 }
             }
 
-            // If payment not paid, don't progress beyond first step
-            if (!paymentPaid && statusInfo.step > 1) {
-                const progressBar = document.getElementById('progressBar');
-                progressBar.style.width = '0%';
-                document.getElementById('step1').classList.add('active');
-                for (let i = 2; i <= 4; i++) {
-                    document.getElementById(`step${i}`).classList.remove('active', 'completed');
+            // Update status text and estimated time
+            const statusText = document.getElementById('currentStatusText');
+            const estimatedTime = document.getElementById('estimatedTime');
+
+            if (!paymentPaid) {
+                statusText.textContent = 'Menunggu pembayaran untuk memproses pesanan';
+                estimatedTime.textContent = 'Estimasi: Setelah pembayaran diterima';
+            } else {
+                switch(status) {
+                    case 'process':
+                        statusText.textContent = 'Pesanan Anda sedang diproses';
+                        estimatedTime.textContent = 'Estimasi: 1-2 hari kerja';
+                        break;
+                    case 'packing':
+                        statusText.textContent = 'Pesanan Anda sedang dikemas';
+                        estimatedTime.textContent = 'Estimasi: 2-3 hari kerja';
+                        break;
+                    case 'shipping':
+                        statusText.textContent = 'Pesanan Anda dalam perjalanan';
+                        estimatedTime.textContent = 'Estimasi: 3-5 hari kerja';
+                        break;
+                    case 'delivered':
+                        statusText.textContent = 'Pesanan Anda telah sampai!';
+                        estimatedTime.textContent = 'Terima kasih telah berbelanja';
+                        break;
+                    default:
+                        statusText.textContent = 'Memproses pesanan Anda...';
+                        estimatedTime.textContent = 'Estimasi: 1-3 hari kerja';
                 }
             }
+
+            // Note: Progress bar shows actual order status, payment status only affects the text message
         }
 
         function showErrorMessage() {
